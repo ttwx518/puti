@@ -1,0 +1,10 @@
+#
+# robots.txt
+#
+
+User-agent: *
+Disallow: /myadmin/
+Disallow: /data/
+Disallow: /include/
+Disallow: /templates/
+Disallow: /uploads/

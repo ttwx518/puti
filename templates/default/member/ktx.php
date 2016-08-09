@@ -1,0 +1,90 @@
+<?php require_once TMPL_DIR . 'public/new_header.php'; ?>
+<body>
+<header><a href="javascript:void(0)" class="back"></a><span class="title">种子会员</span></header>
+<section class="main">
+	<section class="inner_cash">
+    	<section class="inner_recharge">
+    	<section class="user_header">
+    	<div class="table">
+        	<div class="table-cell v-t item_face">
+                  <div class="circle face"><img src="<?php echo STATIC_PATH ; ?>/new_html/images/face.jpg"></div>
+             </div>
+             <div class="table-cell v-t item_con">
+					<div class="fs36 user_name">小鬼不会飞</div>
+                    <div class="user_num"><span>会员编号：<i>000000001</i></span><span>推荐人：<i>萌萌哒</i></span></div>
+                    <div class="user_has">拥有种子：<i>3000</i>颗</div>
+             </div>
+        </div>
+        <ul class="has_seed">
+        	<li><i class="i1"></i>金种子<span>110</span>颗</li>
+            <li><i class="i2"></i>银种子<span>110</span>颗</li>
+            <li><i class="i3"></i>铜种子<span>110</span>颗</li>
+        </ul>
+    </section>
+    </section>
+    	<section class= "b_d icon recharge tixian">
+            <div class="table">
+                <div class="table-cell v-t tit"><p class="fs24 col_80">可提现种子</p><p class="fs24 col_80"><i class="fs32 col_93">3000</i>粒</p></div>
+                <div class="table-cell v-t choose">
+                    <select class="select">
+                                <option>100</option>
+                                <option>100</option>
+                                <option>100</option>
+                    </select>
+                </div>
+                <div class="table-cell v-t btn">
+                    <button type="button" class="br10">提现</button>
+                </div>
+            </div>	
+    	</section>
+        <section class="b_d icon com_bi tixian_list">
+        	<div class="item_hd">
+            	<div class="table">
+                	<div class="table-cell"><i class="i1"></i>110颗</div>
+                    <div class="table-cell"><i class="i2"></i>110颗</div>
+                    <div class="table-cell"><i class="i3"></i>110颗</div>
+                </div>
+            </div>
+            <div class="tixian_bd">
+                	<div class="table-cell v-t text"><input type="text" value="1"/></div>
+                    <div class="table-cell v-t choose">
+                        <select class="select">
+                                <option>金</option>
+                                <option>银</option>
+                                <option>铜</option>
+                        </select>
+                    </div>
+                    <div class="table-cell v-t btn">
+                    	<button type="button" class="br10">充值</button>
+                    </div>
+                    <div class="table-cell v-t btn_duihuan">
+                    	<button type="button" class="br10">会员兑换</button>
+                    </div>
+            </div>
+        </section>
+        <section class="b_d icon inner_tixian">
+        	<div class="time_set">
+            	<div class="fs30 col_33 tixian_tit">提现明细查询</div>
+                <div class="tixian_time table">
+                	<div class="table-cell time">
+                    	<input type="text" placeholder="开始" class="text br40"/><span class="span"></span>
+                        <input type="text" placeholder="结束" class="text br40"/>
+                    </div>
+                    <div class="table-cell btn">
+                    	<button type="button" class="br40">查询</button>
+                    </div>
+                </div>
+            </div>
+            <div class="inner_tixian_list">
+            	<ul>
+                	<li><span class="fl col_50 fs28">2015.11.11</span><span class="fr col_e2 fs28">¥100.0</span></li>
+                    <li><span class="fl col_50 fs28">2015.11.11</span><span class="fr col_e2 fs28">¥100.0</span></li>
+                    <li><span class="fl col_50 fs28">2015.11.11</span><span class="fr col_e2 fs28">¥100.0</span></li>
+                </ul>
+            </div>
+        </section>
+    </section>
+</section>
+<?php require_once TMPL_DIR . 'public/new_footer.php'; ?>
+</body>
+</html>

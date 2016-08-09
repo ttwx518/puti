@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <?php require_once TMPL_DIR . 'public/header.php'; ?>
+    <?php require_once TMPL_DIR . 'public/header_back.php'; ?>
+    <body>
+    <section class="wrap">
+      <section class="main">
+        <section class="br10 b-d inner-active-intro">
+          <div class="fs16 col_y tit"><?php echo $info['title']?></div>
+          <div class="p10 info">
+            <?php echo $info['content']?>
+          </div>
+        </section>
+        <div class="goods-buy-bar">
+        <div class="table">
+          <div class="table-cell item-fav">
+          <form id="favform"
+				action="index.php?c=info&a=activitydetails&id=<?php echo $info['id']?>"
+				method="post" enctype="multipart/form-data">
+				<input value="1" name="subfav" type="hidden" />
+				<a 	href="javascript:void(0);"
+					onclick="javascript:$('#favform').submit()"
+					class="<?php echo empty($fav)?'fav':'faved';?>"  style="color: #000"><?php echo empty($fav)?'未关注':'已关注';?></a>
+			</form>
+          </div>
+          <div class="table-cell active-sign"><a href="<?php echo $info['url']?>"><i><?php echo $info['btntext']?></i></a></div>
+        </div>
+      </div>
+      
+        <!-- <div class="active-sign">
+        <a href="index.php?c=activity&a=activitybuy&clsid=<?php //echo $info['classid']?>&id=<?php echo $info['id']?>"><i>我要参加</i></a></div> -->
+      </section>
+    </section>
+        <?php require_once TMPL_DIR . 'public/footer.php'; ?>
+    </body>
+</html>

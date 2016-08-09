@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<?php require_once TMPL_DIR . 'public/header.php'; ?>
+<?php require_once TMPL_DIR . 'public/header_back.php'; ?>
+<body>
+<section class="wrap">
+  <section class="main">
+    <section class="p10 inner-active-application">
+      <div class="comform">
+        <ul>
+          <li>
+            <div class="table">
+              <div class="table-cell item-tit">申请单位名称：</div>
+              <div class="table-cell item-con">
+                <input type="text" placeholder="请输入单位名称"  id="cname" name="cname">
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="table">
+              <div class="table-cell item-tit">申请联系人：</div>
+              <div class="table-cell item-con">
+                <input type="text" placeholder="请输入联系人"  id="uname" name="uname">
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="table">
+              <div class="table-cell item-tit">申请联系方式：</div>
+              <div class="table-cell item-con">
+                <input type="text" placeholder="请输入联系方式"  id="mobile" name="mobile">
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="table">
+              <div class="table-cell item-tit">申请活动地址：</div>
+              <div class="table-cell item-con">
+                <input type="text" placeholder="请输入联系地址"  id="address" name=""address"">
+              </div>
+            </div>
+          </li>
+        </ul>
+          <button class="br5 combtn" id="sub_btn">申    请</button>
+      </div>
+    </section>
+  </section>
+</section>
+        <?php require_once TMPL_DIR . 'public/footer.php'; ?>
+    </body>
+<script type="text/javascript">
+$(function(){
+	$("#sub_btn").click(function(){
+		var cname = $("#cname");
+		var uname = $("#uname");
+		var mobile = $("#mobile");
+		var address = $("#address");
+		if($.trim(cname.val()) == ''){
+			ShowMessage("请填写企业名称");
+			cname.focus();
+			return false;
+		}else if($.trim(uname.val()) == ''){
+			ShowMessage("请填写联系人");
+			uname.focus();
+			return false;
+		}else if($.trim(mobile.val()) == ''){
+			ShowMessage("请填写联系方式");
+			mobile.focus();
+			return false;
+		}
+
+		$.ajax({ //ajax删除选中产品
+			url:		'index.php?c=activity&a=saveapply&cname=' + cname.val()+'&uname=' + uname.val()+'&mobile=' + mobile.val()+'&address=' + address.val(),
+			dataType:	'json',
+			success:	function(data) {
+				if(data.flag){
+					$("#cname").val('');
+					$("#uname").val('');
+					$("#mobile").val('');
+					$("#address").val('');
+				}
+				ShowMessage(data.msg);
+			}
+		});
+	});
+});
+</script>
+</html>

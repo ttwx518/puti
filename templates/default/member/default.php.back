@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <?php require_once TMPL_DIR . 'public/header.php'; ?>
+    <?php //require_once TMPL_DIR . 'public/header_back.php'; ?>
+    <body>
+    <section class="wrap" style="padding-top: 0px;">
+		<section class="main">
+			<section class="user-header">
+				<div class="table">
+					<div class="table-cell item-photo">
+						<div class="circle face">
+							<img src="<?php echo $userInfo['wechat_headimgurl'] ? $userInfo['wechat_headimgurl'] : STATIC_PATH.'images/avator.png'; ?>" class="circle">
+						</div>
+					</div>
+					<div class="table-cell v-m item-con">
+						<div class="name"><?php echo empty($userInfo['wechat_nickname'])?'无':$userInfo['wechat_nickname'];?></div>
+						<div class="level"><?php echo $userInfo['desc']?></div>
+						<div class="level">由 <?php echo $recName; ?> 推荐</div>
+					</div>
+				</div>
+				<ul>
+					<li>可用种子数量：<?php echo $userInfo['yongjin']; ?></li>
+					<li>活动认养积分： <?php echo $userInfo['jifen']; ?></li>
+				</ul>
+			</section>
+			<section class="user-guide">
+				<ul>
+					<li><a href="index.php?c=member&a=ytx">我的种子</a></li>
+					<li><a href="index.php?c=member&a=distributors"><span>我的团队</span></a><a href="index.php?c=member&a=results"><span>种子业绩</span></a></li>
+					<li><a href="index.php?c=member&a=qrcode"><span>我的二维码</span></a></li>
+					<li><a href="index.php?c=member&a=order"><span>我的订单</span></a></li>
+					<li><a href="index.php?c=member&a=address"><span>地址管理</span></a></li>
+					<li><a href="index.php?c=member&a=fav"><span>我的收藏</span></a></li>
+				</ul>
+			</section>
+		</section>
+	</section>
+        <?php require_once TMPL_DIR . 'public/footer.php'; ?>
+    </body>
+    <script>
+    $(document).on('click', '.circle img',function(event) {
+        var imgArray = [];
+        var curImageSrc = $(this).attr('src');
+        $('.circle img').each(function(index, el) {
+            var itemSrc = $(this).attr('src');
+            imgArray.push(itemSrc);
+        });
+        wx.previewImage({
+            current: curImageSrc,
+            urls: imgArray
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,24 @@
+request body = <TemplateSMS>
+                    <to></to> 
+                    <appId>aaf98f894df52772014df55a81e80075</appId>
+                    <templateId>23508</templateId>
+                    <datas><data>2015-06-12</data><data>徐汇区 上海南站 万科华尔兹花园 万科A</data><data>21685155822</data><data>9:00~18:00</data></datas>
+                  </TemplateSMS>
+request url = https://sandboxapp.cloopen.com:8883/2013-12-26/Accounts/8a48b5514de7ae4c014df4e6a7b005f6/SMS/TemplateSMS?sig=1E712E79C470EC4D960610044F5C87ED
+response body = <?xml version="1.0" encoding="UTF-8" standalone="yes"?><Response><statusCode>112306</statusCode><statusMsg>【短信】接收模板短信的手机号码为空</statusMsg></Response>
+request body = <TemplateSMS>
+                    <to></to> 
+                    <appId>aaf98f894df52772014df55a81e80075</appId>
+                    <templateId>23508</templateId>
+                    <datas><data>2015-06-13</data><data>徐汇区 上海南站 万科华尔兹花园 万科A</data><data>61694790714</data><data>9:00~18:00</data></datas>
+                  </TemplateSMS>
+request url = https://sandboxapp.cloopen.com:8883/2013-12-26/Accounts/8a48b5514de7ae4c014df4e6a7b005f6/SMS/TemplateSMS?sig=1920AFD7F89A8DE34E87B61DA4FE9268
+response body = <?xml version="1.0" encoding="UTF-8" standalone="yes"?><Response><statusCode>112306</statusCode><statusMsg>【短信】接收模板短信的手机号码为空</statusMsg></Response>
+request body = <TemplateSMS>
+                    <to>18601635429</to> 
+                    <appId>aaf98f894df52772014df55a81e80075</appId>
+                    <templateId>23508</templateId>
+                    <datas><data>2015-06-10</data><data>徐汇区 上海南站 万科华尔兹花园 万科A</data><data>30705335124</data><data>9:00~18:00</data></datas>
+                  </TemplateSMS>
+request url = https://sandboxapp.cloopen.com:8883/2013-12-26/Accounts/8a48b5514de7ae4c014df4e6a7b005f6/SMS/TemplateSMS?sig=8BD84841F386A4CEEFF41F7CCAC214BA
+response body = <?xml version="1.0" encoding="UTF-8" standalone="yes"?><Response><statusCode>000000</statusCode><TemplateSMS><dateCreated>20150625162023</dateCreated><smsMessageSid>20150625162023650499</smsMessageSid></TemplateSMS></Response>

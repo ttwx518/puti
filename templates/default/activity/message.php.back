@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<?php require_once TMPL_DIR . 'public/header.php'; ?>
+<body>
+	<section class="wrap">
+    <?php require_once TMPL_DIR . 'public/header_back.php'; ?>
+		<section class="main">
+			<section class="love-message">
+			    <form action="index.php?c=activity&a=message" method="post" style="padding: 10px" onsubmit="return checkReturn();">
+				<div class="p10 b-b textarea">
+					<textarea name="content" id="content" placeholder="请在这里留下您的爱心感言，谢谢"></textarea>
+				</div>
+				<input type="hidden" name="savemessage" value='1'/>
+				<div class="p10 b-b textarea"><button type="submit" name="returnSub" class="br5 combtn fr" style="width: 20%; right: 20px">提 交</button></div>
+				</form>
+				<div class="b-bt love-message-list">
+					<div class="user-comment">
+						<ul class="no_last">
+						<?php foreach ($messages as $K=>$v):?>
+							<li>
+								<div class="table">
+									<div class="table-cell v-t item-face">
+										<div class="circle face">
+											<img src="<?php echo $v['wechat_headimgurl']?>">
+										</div>
+									</div>
+									<div class="table-cell v-t item-con">
+										<div class="fs16 col_y t1"><?php echo $v['wechat_nickname']?></div>
+										<div class="t2"><?php echo date('Y-m-d H:i',$v['createtime'])?></div>
+										<div class="t3"><?php echo $v['content']?></div>
+									</div>
+								</div>
+							</li>
+						<?php endforeach;?>
+						</ul>
+					</div>
+				</div>
+			</section>
+		</section>
+	</section>
+        <?php require_once TMPL_DIR . 'public/footer.php'; ?>
+    </body>
+    <script>
+            function checkReturn(){
+                var $content = $('#content'),
+                    content = $content.val();
+                if(!content){
+                    ShowMessage('请填写留言内容');
+                    $content.focus();
+                    return false;
+                }
+            }
+        </script>
+</html>

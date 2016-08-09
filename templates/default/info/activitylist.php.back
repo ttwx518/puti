@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+    <?php require_once TMPL_DIR . 'public/header.php'; ?>
+    <?php require_once TMPL_DIR . 'public/header_back.php'; ?>
+    <body>
+<section class="wrap">
+  <section class="main">
+  <div class="bg-w myOrder-tab">
+		<ul>
+			<li class="<?php echo $type==1 ?'on':'';?>" style="width: 33%"><a href="index.php?c=info&a=activitylist&clsid=5&type=1" style="color: red;">未开始</a></li>
+			<li class="<?php echo $type==3 ?'on':'';?>" style="width: 33%"><a href="index.php?c=info&a=activitylist&clsid=5type=3" style="color: red;">进行中</a></li>
+			<li class="<?php echo $type==2 ?'on':'';?>" style="width: 33%"><a href="index.php?c=info&a=activitylist&clsid=5&type=2" style="color: red;">已结束</a></li>
+		</ul>
+	</div>
+    <section class="bg-w inner-active-dyanmic">
+      <ul>
+      <?php if(empty($records['data'])):?>
+      <li style="text-align: center;">无数据</li>
+      <?php endif;?>
+      <?php foreach ($records['data'] as $k=>$v):?>
+      <?php $dataurl = "index.php?c=info&a=activitydetails&id=".$v['id'];?>
+        <li>
+          <div class="table">
+            <div class="table-cell item-photo" dataurl="<?php echo $dataurl?>"><img src="<?php echo $v['picurl']?>"></div>
+            <div class="table-cell item-con" >
+              <div class="fs16 col_y tit" dataurl="<?php echo $dataurl?>"><?php echo $v['title']?></div>
+              <div class="info" dataurl="<?php echo $dataurl?>"><?php echo $v['description']?></div>
+              <div class="date" dataurl="<?php echo $dataurl?>"><?php echo date('Y-m-d H:i',$v['posttime'])?></div>
+              <i class="br5 status <?php echo $v['css']?>" dataurl = "<?php echo $dataurl?>"><?php echo $v['btntext']?></i>
+            </div>
+          </div>
+          </li>
+          <?php endforeach;?>
+      </ul>
+    </section>
+      <?php require_once TMPL_DIR . 'public/page.php'; ?>
+  </section>
+</section>
+        <?php require_once TMPL_DIR . 'public/footer.php'; ?>
+    </body>
+    <script type="text/javascript">
+    $(function(){
+        $(".status").click(function(){
+            location.href=$(this).attr('dataurl');
+        });
+        $(".item-photo,.tit,.info,.date").click(function(){
+            location.href=$(this).attr('dataurl');
+        });
+    });
+    </script>
+</html>
