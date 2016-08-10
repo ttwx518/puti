@@ -96,7 +96,7 @@
 								</div>
 							</a>
 						</li>
-						<li style="border-color: #000;"><a href="index.php?c=cat&pid=20">
+						<li style="border-color: #000;"><a href="index.php?c=activity&a=activity">
 								<div class="photo" style="border-color: #000">
 									<img src="<?php echo STATIC_PATH; ?>images/url4.jpg" class='picurl'>
 								</div>

@@ -21,6 +21,11 @@ if ($a == 'default') {
     }
     $seo = setSeo('种子活动', $cfg_keyword, $cfg_description);
 }
+//种子活动
+elseif($a == 'activity'){
+
+    $seo = setSeo('种子活动', $cfg_keyword, $cfg_description);
+}
 
 
 

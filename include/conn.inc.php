@@ -16,7 +16,7 @@ $db_host = '127.0.0.1';
 $db_user = 'root';
 
 //数据库密码
-$db_pwd = 'jhs5512187';
+$db_pwd = 'Zhaoqiaoyun1';
 
 //数据库名
 $db_name = 'puti';

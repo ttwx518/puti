@@ -82,3 +82,5 @@
 <?php exit(); ?> Time: 2016-01-11 09:51:47. || Page: / || IP: 127.0.0.1 || Error: 连接数据库失败，可能数据库密码不对或数据库服务器出错！
 <?php exit(); ?> Time: 2016-01-28 09:51:40. || Page: /puti/index.php || IP: 127.0.0.1 || Error: BIGINT UNSIGNED value is out of range in '(`puti`.`lxlp_member`.`yongjin` - 100)' Error sql: UPDATE `lxlp_member` SET yongjin=yongjin - 100 where id=415
 <?php exit(); ?> Time: 2016-01-28 09:53:46. || Page: /puti/index.php || IP: 127.0.0.1 || Error: BIGINT UNSIGNED value is out of range in '(`puti`.`lxlp_member`.`yongjin` - 100)' Error sql: UPDATE `lxlp_member` SET yongjin=yongjin - 100 where id=415
+<?php exit(); ?> Time: 2016-08-10 14:56:50. || Page: /myadmin/ || IP: 127.0.0.1 || Error: 连接数据库失败，可能数据库密码不对或数据库服务器出错！
+<?php exit(); ?> Time: 2016-08-10 14:56:51. || Page: /myadmin/ || IP: 127.0.0.1 || Error: 连接数据库失败，可能数据库密码不对或数据库服务器出错！

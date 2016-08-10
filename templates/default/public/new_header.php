@@ -9,6 +9,8 @@
     <meta name="keywords" content="<?php echo $seo['keywords'];?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo STATIC_PATH; ?>/new_html/css/common.css">
     <link rel="stylesheet" href="<?php echo STATIC_PATH; ?>/new_html/css/style.css" type="text/css" media="all"/>
+    <script src="<?php echo STATIC_PATH; ?>/new_html/js/jquery.js"></script>
+
     <script src="<?php echo STATIC_PATH; ?>/new_html/js/js.js"></script>
     <!--[if lt IE 9 ]>
     <script src="<?php echo STATIC_PATH; ?>/new_html/js/html5.js">
