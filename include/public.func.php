@@ -532,6 +532,7 @@ function getInfoList($page, $clsid, $a, $type=3){
     $where = " classid={$clsid} AND delstate='' AND checkinfo='true'";
     $total = $dosql->GetOne("SELECT count(id) as num FROM `#@__infolist` WHERE {$where}");
     $return['pagesum'] = ceil($total['num']/$limit);
+
     $sql = "SELECT * FROM `#@__infolist` WHERE {$where} ORDER BY orderid desc LIMIT $start,$limit";
     $dosql->Execute($sql);
     while ($row = $dosql->GetArray()) {

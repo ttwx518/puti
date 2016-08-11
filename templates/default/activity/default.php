@@ -1,20 +1,22 @@
 <?php require_once TMPL_DIR . 'public/new_header.php'; ?>
 <body>
-<header><a href="javascript:void(0)" class="back"></a><span class="title">种子活动</span></header>
+<header><a href="javascript:window.history.back()" class="back"></a><span class="title">种子活动</span></header>
 <section class="main">
 	<section class="active_box">
     	<div class="flexslider banner">
           <ul class="slides">
-            <li><img src="<?php echo STATIC_PATH ; ?>/new_html/images/active-slider.jpg" /></li>
-            <li><img src="<?php echo STATIC_PATH ; ?>/new_html/images/active-slider.jpg" /></li>
+              <?php foreach($banners as $val) { ?>
+            <li><a href="<?php echo $val['linkurl'];?>"> <img src="<?php echo $val['picurl'];?>" /></a></li>
+              <?php } ?>
+
           </ul>
         </div>
         <div class="active_list">
         	<div class="active_big">
             	<ul class="clearfix">
                 	<li><a href="index.php?c=info&a=infodetails&id=1">种子活动概况</a></li>
-                    <li><a href="index.php?c=info&a=activitylist&clsid=5">植树活动认养</a></li>
-                    <li><a href="index.php?c=info&a=activitylist&clsid=5">帮困活动认购</a></li>
+                    <li><a href="index.php?c=info&a=activitylist&activity_type=adopt">植树活动认养</a></li>
+                    <li><a href="index.php?c=info&a=activitylist&activity_type=subscription">帮困活动认购</a></li>
                     <li><a href="index.php?c=activity&a=apply">种子活动申请</a></li>
                     <li><a href="index.php?c=child_apply">智残儿童申请</a></li>
                     <li><a href="index.php?c=info&a=infolist&clsid=6">种子新闻动态</a></li>

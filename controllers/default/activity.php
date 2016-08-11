@@ -19,6 +19,7 @@ if ($a == 'default') {
     while ($row = $dosql->GetArray()) {
         $banners[] = $row;
     }
+
     $seo = setSeo('种子活动', $cfg_keyword, $cfg_description);
 }
 //种子活动

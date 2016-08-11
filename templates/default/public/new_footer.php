@@ -15,10 +15,10 @@
 ?>
 
     <footer>
-        <a href="#" class="on"><i class="icon"></i>菩提首页</a>
-        <a href="#"><i class="icon"></i>种子活动</a>
-        <a href="#"><i class="icon"></i>购物车</a>
-        <a href="#"><i class="icon"></i>个人中心</a>
+        <a href="index.php" <?php if($f1) { ?>class="on" <?php } ?> ><i class="icon"></i>商城首页</a>
+        <a href="index.php?c=activity&a=default" <?php if($f2) { ?>class="on" <?php } ?> ><i class="icon"></i>种子活动</a>
+        <a href="index.php?c=cart" <?php if($f3) { ?>class="on" <?php } ?> ><i class="icon"></i>购物车</a>
+        <a href="index.php?c=member" <?php if($f4) { ?>class="on" <?php } ?> ><i class="icon"></i>个人中心</a>
     </footer>
 
 <link rel="stylesheet" href="<?php echo STATIC_PATH; ?>css/flexslider.css" type="text/css" media="screen" />

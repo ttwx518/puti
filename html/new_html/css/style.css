@@ -62,7 +62,7 @@ input,button {border:none;outline:0;background:none}
 
 
 header{width:100%;height:.88rem;background-color:rgb(162,135,69); position:relative}
-header .back{width:.25rem; position:absolute;left:.3rem;top:50%;margin-top:-0.125rem;}
+header .back{width:.25rem; position:absolute;left:.3rem;top:50%;margin-top:-0.125rem; z-index: 999;}
 header .back:after{ content:"";border-left: 1px solid #fff;border-top: 1px solid #fff;width: .25rem;height: .25rem;transform: rotate(-45deg);-webkit-transform: rotate(-45deg); position: absolute;left: 0;top: 0;}
 header .title{position:absolute;width:100%;text-align:center;line-height:.88rem;color:#fff;font-size:.36rem;}
 header .share{position:absolute;right:0.28rem;top:50%;width:0.4rem;height:0.4rem;margin-top:-0.2rem;background:url(../images/icon_share.png) no-repeat;background-size:100%;}
@@ -85,7 +85,7 @@ footer a.on .icon{background-image:url(../images/footer-nav-on.png);}
 .choose_text{position:relative}
 .choose_text .hd{width:100%;height:0.94rem; line-height:0.94rem; display:table;border-bottom:1px solid #bca878}
 .choose_text .hd span{ display:table-cell; text-align:center;color:#808080;font-size:0.32rem; position:relative}
-.choose_text .hd span.on{color:#786025}
+.choose_text .hd span.on a{color:#786025}
 .choose_text .hd span.on:after{ content:"";border-left: 1px solid #bca878;border-top: 1px solid #bca878;background-color:#fff;width: .24rem;height: .24rem;transform: rotate(-135deg);-webkit-transform: rotate(-135deg);position: absolute;left: 42%;bottom: -0.15rem;}
 .seed_text .list li{border-bottom:1px solid #e5e5e5; line-height:1.18rem;padding-left:0.1rem;font-size:.32rem;}
 
@@ -98,7 +98,7 @@ footer a.on .icon{background-image:url(../images/footer-nav-on.png);}
 .inner_active_intro .contit{ text-align:center;padding-top:0.38rem;overflow:hidden}
 .inner_active_intro p{margin-bottom:0.2rem;}
 .inner_active_intro .info{padding-top:0.4rem;}
-.inner_active_intro .info p{ text-indent:.6rem; line-height:1.5;white-space:pre-wrap;}
+.inner_active_intro .info p{ /*text-indent:.6rem;*/ line-height:1.5;white-space:pre-wrap;}
 .user_words{margin-bottom:2rem;}
 .worder_com{padding:0 0.68rem 0 0.28rem;}
 .user_words .hd{padding-top:0.3rem;padding-bottom:0.3rem;color:#808080;border-bottom:1px solid #dce1e3}
@@ -231,7 +231,7 @@ footer a.on .icon{background-image:url(../images/footer-nav-on.png);}
 .inner_tixian .inner_tixian_list li{padding:0.38rem 0.28rem;border-bottom:1px solid #e5e5e5;clear:both; overflow:auto}
 .time_set{padding:0.24rem;}
 .time_set .tixian_tit{margin-bottom:0.22rem;}
-.time_set .text{width:2.2rem;height:0.68rem;border:1px solid #e1e1e1; text-align:center; color:#d1d1d1}
+.time_set .text{width:2.4rem;height:0.68rem;border:1px solid #e1e1e1; text-align:center; color:#d1d1d1}
 .time_set .span{display:inline-block; vertical-align:middle;width:0.3rem;height:1px;background-color:#937a3c;margin:0 0.16rem;}
 .time_set .btn{width:1.4rem;}
 .time_set .btn button{background-color:#ff6c04}
