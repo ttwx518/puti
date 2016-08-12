@@ -35,6 +35,7 @@ elseif ($a == 'apply'){
     $seo = setSeo('种子活动申请', $cfg_keyword, $cfg_description);
 }
 
+
 // 领取礼品
 // elseif ($a == 'gift'){
 //     $flag = empty($flag)?'':$flag;
@@ -86,8 +87,9 @@ elseif ($a == 'activitybuy'){
     while ($row=$dosql->GetArray()){
         $infolist[]=$row;
     }
-    
     $info=$dosql->GetOne("SELECT * FROM `#@__infolist` WHERE delstate='' AND checkinfo='true' AND id= ".$id);
+
+
     //$infoclass = $dosql->GetOne("SELECT * FROM `#@__infoclass` WHERE id={$clsid}");
     $seo = setSeo('种子爱心认养', $cfg_keyword, $cfg_description);
 }

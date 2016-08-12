@@ -20,7 +20,7 @@
                       <select id="activityid" name="activityid">
                         <!-- <option value='0'>请选择您要参加的活动</option> -->
                         <?php foreach ($infolist as $k=>$v):?>
-                        <option goodstitle="<?php echo $v['goodstitle']?>" aid="<?php echo $v['id']?>" goodsprice="<?php echo $v['goodsprice']?>"  goodsunit="<?php echo $v['goodsunit']?>" <?php echo empty($id)?(empty($k)?"selected='selected'":''):($v['id']==$id?"selected='selected'":'')?> value='<?php echo $v['id']?>'><?php echo $v['title']?></option>
+                        <option goodstitle="<?php echo $v['goodstitle']?>" aid="<?php echo $v['id']?>" goodsprice="<?php echo $v['goodsprice']?>"  goodsunit="<?php echo $v['goodsunit']?>" <?php echo empty($id)?(empty($k)?"selected='selected'":''):($v['id']==$id?"selected='selected'":'')?> value='<?php echo $v['id']?>' disabled><?php echo $v['title']?></option>
                         <?php endforeach;?>
                       </select>
                     </div>
