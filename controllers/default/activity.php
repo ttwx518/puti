@@ -66,14 +66,20 @@ elseif ($a == 'apply'){
 
 // 保存活动
 elseif ($a == 'saveapply'){
-    $posttime = time();
-    $sql = "insert into `#@__apply` (cname, uname, mobile, address, checkinfo, posttime) values ('$cname','$uname','$mobile','$address','','$posttime')";
-    if($dosql->ExecNoneQuery($sql)){
-        $ret = array('flag'=>true, 'msg'=>'申请成功,我们将尽快和您联系');
-    }else{
-        $ret = array('flag'=>false, 'msg'=>'申请失败');
+    if(empty($cname) || empty($uname) || empty($mobile) || empty($address)  || empty($posttime)){
+        ShowMsg('请填写完整资料');
+        exit;
     }
-    echo json_encode($ret) ;
+    $posttime = strtotime($posttime);
+    $sql = "insert into `#@__apply` (cname, uname, mobile, address, checkinfo, posttime,activity_type) values ('$cname','$uname','$mobile','$address','','$posttime','$activity_type')";
+    if($dosql->ExecNoneQuery($sql)){
+        ShowMsg('申请成功,我们将尽快和您联系');exit;
+       // $ret = array('flag'=>true, 'msg'=>'申请成功,我们将尽快和您联系');
+    }else{
+        ShowMsg('申请失败');exit;
+       // $ret = array('flag'=>false, 'msg'=>'申请失败');
+    }
+
     exit();
 }
 
@@ -126,16 +132,23 @@ if ($a == 'lucky_list') {
 elseif ($a == 'message'){
     if(!empty($savemessage)){
         $createtime = time();
-        $sql = "insert into `#@__message` (uid, content, createtime, checkinfo) values ({$userInfo['id']},'$content',$createtime,'1')";
-        $dosql->ExecNoneQuery($sql);
+        $sql = "insert into `#@__message` (uid, content, createtime, checkinfo,activity_id) values ({$userInfo['id']},'$content',$createtime,'1','$id')";
+        if($dosql->ExecNoneQuery($sql)){
+            ShowMsg('留言成功');
+        } else {
+            ShowMsg('留言失败');
+        }
     }
 
+    $id = isset($id) ? $id : 0; //活动商品的id
     $messages=array();
     $sql = "select m.wechat_nickname,m.wechat_headimgurl,msg.* from `#@__message` as msg left join  `#@__member` as m on msg.uid=m.id where msg.uid={$userInfo['id']} and checkinfo='1' order by id desc";
     $dosql->Execute($sql);
     while ($row = $dosql->GetArray()){
         $messages[]= $row;
     }
+
+
     $seo = setSeo('爱心留言', $cfg_keyword, $cfg_description);
 }
 

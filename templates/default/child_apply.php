@@ -1,56 +1,57 @@
 <?php require_once TMPL_DIR . 'public/new_header.php'; ?>
 <body>
-<header><a href="javascript:void(0)" class="back"></a><span class="title">种子活动申请</span></header>
+<header><a href="javascript:history.back();" class="back"></a><span class="title">种子活动申请</span></header>
 <section class="main">
     <section class="b_g p20 application chilid_shenqing">
-    	<form>
+    	<form action="child_apply.php?a=save_apply" method="post" onsubmit=" return check_data(); ">
     		<ul>
                 <li>
                     <div class="item_tit">儿童姓名：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入儿童姓名"/></div>
+                    <div class="item_con"><input name="title" id="title" type="text" placeholder="请输入儿童姓名"/></div>
                 </li>
                 <li>
                     <div class="item_tit">性      别：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入儿童性别"/></div>
+                    <div class="item_con"><input name="sex" id="sex"  type="text" placeholder="请输入儿童性别"/></div>
                 </li>
                 <li>
                     <div class="item_tit">儿童年龄：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入儿童年龄"/></div>
+                    <div class="item_con"><input name="age" id="age" type="text" placeholder="请输入儿童年龄"/></div>
                 </li>
                 <li>
                     <div class="item_tit">身份证号：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入身份证号"/></div>
+                    <div class="item_con"><input name="id_no" id="id_no" type="text" placeholder="请输入身份证号"/></div>
                 </li>
                 <li>
                     <div class="item_tit">地      址：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入地址"/></div>
+                    <div class="item_con"><input name="address" id="address" type="text" placeholder="请输入地址"/></div>
                 </li>
                 <li>
                     <div class="item_tit">监护人姓名：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入监护人姓名"/></div>
+                    <div class="item_con"><input name="guardian_name" id="guardian_name" type="text" placeholder="请输入监护人姓名"/></div>
                 </li>
                 <li>
                     <div class="item_tit">监护人联系方式：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入监护人联系方式"/></div>
+                    <div class="item_con"><input type="text" name="guardian_mobile" id="guardian_mobile" placeholder="请输入监护人联系方式"/></div>
                 </li>
                 <li>
                     <div class="item_tit">监督机构：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入监督机构"/></div>
+                    <div class="item_con"><input type="text" name="oversight_bodies" id="oversight_bodies" placeholder="请输入监督机构"/></div>
                 </li>
                 <li>
                     <div class="item_tit">监护人联系地址：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入监护人联系地址"/></div>
+                    <div class="item_con"><input type="text" name="guardian_address" id="guardian_address" placeholder="请输入监护人联系地址"/></div>
                 </li>
                  <li>
                     <div class="item_tit">联系方式：</div>
-                    <div class="item_con"><input type="text" placeholder="请输入联系方式"/></div>
+                    <div class="item_con"><input type="text" name="mobile" id="mobile"  placeholder="请输入联系方式"/></div>
                 </li>
                 <li>
                     <div class="item_tit">贫困儿童介绍：</div>
-                    <div class="item_con"><textarea placeholder="请输入监护人联系地址"></textarea></div>
+                    <div class="item_con"><textarea name="description" id="description" placeholder="请输入监护人联系地址"></textarea></div>
                 </li>
                 <li class="item_pic">
                     <div class="item_tit">上传照片：</div>
+                    <input type="hidden" name="picurl" id="picurl"/>
                     <div class="item_con"><a href="#"></a></div>
                 </li>
         	</ul>
@@ -66,5 +67,18 @@
             </div>
    		</section>
 </section>
+
+<script type="text/javascript">
+
+    function check_data() {
+        var title = $("#title").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var id_no = $("#id_no").val();
+        var id_no = $("#id_no").val();
+    }
+
+</script>
+
 </body>
 </html>

@@ -6,9 +6,10 @@ if(empty($userInfo)){
 /************************种子认养***************************/
 if (!empty($checkoutactivity)) {
     global $dosql,$cfg_freight_free,$cfg_freight,$userInfo;
+    $param = $_POST;
     $orderCart  = array('items' => array(), 'totalNum' => 0, 'totalAmount' => 0, 'totalWeight' => 0, 'totalFreight' => 0,'minYongjin'=>0,'minJifen'=>0);
-    
     $row = $dosql->GetOne("select * from #@__infolist where id={$id}");
+
     $row['salesprice'] = $row['goodsprice'];
     $orderCart['items'][$row['id']] = $row;
     $orderCart['items'][$row['id']]['buyNum'] = $buynum;

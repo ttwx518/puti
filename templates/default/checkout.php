@@ -52,8 +52,8 @@
             </div>
         </div>
         <div class="plb32 order_confim_btn">
-        	 <div class="submit"><a href="index.php?c=activity&a=message"> <button type="button" class="br5 b_g col_a2 b_d combtn ">留    言</button> </a> </div>
-             <div class="submit"><button type="button" class="br5 b_91 col_f combtn ">帮助儿童介绍详情</button></div>
+        	 <div class="submit"><a href="index.php?c=activity&a=message&id=<?php echo $param['id'];?>"> <button type="button" class="br5 b_g col_a2 b_d combtn ">留    言</button> </a> </div>
+            <a href="index.php?c=children"> <div class="submit"><button type="button" class="br5 b_91 col_f combtn ">帮助儿童介绍详情</button></div></a>
              <div class="submit"><button type="button" class="br5 b_a2 col_f combtn ">我要捐赠</button></div>
         </div>
         <section class="article aixin">
