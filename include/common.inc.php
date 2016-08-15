@@ -119,6 +119,14 @@ if($userInfo && !$userInfo['isReced'] && $recUid){
     }
 }
 
+if(empty($userInfo['mem_number'])){
+    $mem_number = make_member_number($userInfo['id']);
+    $dosql->ExecNoneQuery("update `#@__member` set mem_number = '$mem_number' where id = '{$userInfo['id']}' ");
+}
+
+$recUserInfo = $dosql->GetOne("SELECT id,recUid,username,truename,wechat_nickname FROM #@__member WHERE id={$userInfo['recUid']}");
+$recName = $recUserInfo ? $recUserInfo['wechat_nickname'] : '官方商城';
+
 //判断访问设备
 //如果手动更改后台目录，请将/admin目录更改成新后台目录
 /**

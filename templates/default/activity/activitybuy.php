@@ -29,7 +29,14 @@
               </li>
               <li>
                 <div class="table">
-                  <div class="table-cell item-tit">认养数量：</div>
+                  <div class="table-cell item-tit">
+                    <?php if($clsid == 5) { ?>
+                    认养数量：
+                    <?php } else {?>
+                      认购数量：
+                    <?php } ?>
+
+                  </div>
                   <div class="table-cell item-con">
                     <div class="select-txt">1</div>
                     <div class="icon-dot select">
@@ -83,8 +90,18 @@
                 </div>
               </li>
             </ul>
-            <div class="price"><span class="col_y">认养费用：</span><span class="col_r">¥<strong class="fs20" id="total"></strong></span></div>
-            <button class="br5 combtn">认    养</button>
+            <div class="price"><span class="col_y">
+                  <?php if($clsid == 5) { ?>
+                    认养费用：
+                  <?php } else {?>
+                    认购费用：
+                  <?php } ?></span><span class="col_r">¥<strong class="fs20" id="total"></strong></span></div>
+
+            <?php if($clsid == 5) { ?>
+              <button class="br5 combtn">认    养</button>
+            <?php } else {?>
+              <button class="br5 combtn">认    购</button>
+            <?php } ?>
             <input type="hidden" name="checkoutactivity" value="1" />
             <input type="hidden" name="aid" id="aid" value="" />
             <input type="hidden" name="id" value="<?php echo $id?>"/>

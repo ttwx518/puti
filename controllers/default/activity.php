@@ -97,7 +97,12 @@ elseif ($a == 'activitybuy'){
 
 
     //$infoclass = $dosql->GetOne("SELECT * FROM `#@__infoclass` WHERE id={$clsid}");
-    $seo = setSeo('种子爱心认养', $cfg_keyword, $cfg_description);
+    if($clsid == 5) {
+        $seo = setSeo('种子爱心认养', $cfg_keyword, $cfg_description);
+    } else{
+        $seo = setSeo('帮困活动认购', $cfg_keyword, $cfg_description);
+    }
+
 }
 
 //抽奖

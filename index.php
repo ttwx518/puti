@@ -30,6 +30,9 @@ if (!file_exists($tmplPath . "{$tmplFileName}.php")) {
     header("Location:index.php");
 }
 
+//认购活动介绍
+$activity_news = $dosql->GetOne("select * from `#@__infolist` where classid = '10' and id = '18' ");
+
 //如果在微信中打开,加载微信分享
 $useragent = addslashes($_SERVER['HTTP_USER_AGENT']);
 if (strpos($useragent, 'MicroMessenger') === false && strpos($useragent, 'Windows Phone') === false) {

@@ -1,34 +1,51 @@
 <?php require_once TMPL_DIR . 'public/new_header.php'; ?>
 <body>
-<header><a href="javascript:void(0)" class="back"></a><span class="title">种子会员</span></header>
+<?php require_once TMPL_DIR. 'public/new_header_back.php';?>
 <section class="main">
 	<section class="look">
     	<section class="com_top">
         	<section class="b_g look_hd">
                 <div class="table">
                     <div class="table-cell v-t choose">
-                        <select class="select">
-                                    <option>100</option>
-                                    <option>100</option>
-                                    <option>100</option>
+                        <select name="prov" id="prov" class="select">
+                                    <option value="">请选择</option>
+                                    <?php foreach($area as $key => $val) { ?>
+                                    <option value="<?php echo $val['datavalue'];?>"><?php echo $val['dataname'];?></option>
+                                    <?php }?>
+
                         </select>
                     </div>
                     <div class="table-cell v-t btn">
-                        <button type="button" class="br40">查询</button>
+                        <button type="button" id="check" class="br40">查询</button>
                     </div>
                 </div>	
     		</section>
         </section>
         <section class="b_g look_list">
         	<ul>
-            	<li><a href="#">巴拉巴拉巴拉巴拉</a></li>
-                <li><a href="#">巴拉巴拉巴拉巴拉</a></li>
-                <li><a href="#">巴拉巴拉巴拉巴拉</a></li>
-                <li><a href="#">巴拉巴拉巴拉巴拉</a></li>
+                <?php if(!empty($list)) { ?>
+                    <?php foreach($list as $val) {?>
+                    <li><a href="index.php?c=citem&id=<?php echo $val['id'];?>"><?php echo $val['title2'];?></a></li>
+                        <?php }?>
+                <?php } else { ?>
+            	<li><a href="javascript:void(0);">暂无数据</a></li>
+                <?php }?>
             </ul>
         </section>
     </section>
 </section>
 <?php require_once TMPL_DIR . 'public/new_footer.php'; ?>
+
+<script type="application/javascript">
+    $("#check").on('click',function(){
+        var prov = $("#prov").val();
+        if(prov == ''){
+            alert('请选择');
+            return flse;
+        }
+        window.location.href = "index.php?c=member&a=check_house&select=select&prov="+prov;
+    });
+</script>
+
 </body>
 </html>

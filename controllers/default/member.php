@@ -26,6 +26,8 @@ if(empty($userInfo)){
 if ($a == 'default') {
     $recUserInfo = $dosql->GetOne("SELECT id,recUid,username,truename,wechat_nickname FROM #@__member WHERE id={$userInfo['recUid']}");
     $recName = $recUserInfo ? $recUserInfo['wechat_nickname'] : '官方商城';
+
+
     
 //     //获取各状态订单数量统计
 //     //待付款
@@ -164,13 +166,51 @@ else if ($a == 'ytx') {
 
 //种子充值
 else if($a == 'recharge'){
+    $option = [
+        '1' => 1,
+        '5' => 5,
+        '10' => 10,
+        '30' => 30,
+        '50' => 50,
+        '100' => 100,
+        '300' => 300,
+        '500' => 500,
+        '1000' => 1000,
+        '3000' => 3000,
+        '5000' => 5000,
+        '10000' => 10000,
+        '20000' => 20000,
+        '50000' => 50000,
+        '100000' => 100000,
+    ];
+    $save = isset($save) ? $save : '';
+    if($save == 'save') {
+        $seed_num = isset($seed_num) ? $seed_num : '0';
+        if($seed_num == 0) {
+            ShowMsg('请选择充值金额');
+            exit;
+        }
+        $ordernum =  MyDate('YmdHis', time()) . mt_rand(10000, 99999);
+        $uid     = $userInfo['id'];
+        $status  = -1;
+        $create_at = time();
+        $money     = $seed_num;
+        $sql = "insert into `#@__order_recharge` (`uid`, `ordernum`, `money`, `status`, `create_at`) VALUES ('$uid', '$ordernum', '$money', '$status', '$create_at')";
+        if($dosql->ExecNoneQuery($sql)){
+            redirect('topay/wechatpay/js_recharge.php?ordernum='.$ordernum);
+            //redirect('index.php?c=member&a=rechargeSuccess&ordernum='.$ordernum);
+        } else {
+            ShowMsg('下单充值失败');
+        }
+
+
+    }
 
     $seo = setSeo('种子充值', $cfg_keyword, $cfg_description);
 }
-
 // 提现
 else if ($a == 'ktx') {
-    $seo = setSeo('种子兑换', $cfg_keyword, $cfg_description);
+    $seo = setSeo('种子提现', $cfg_keyword, $cfg_description);
 }
 
 // 我的二维码
@@ -457,6 +497,30 @@ else if ($a == 'paySuccess') {
 
     redirect('index.php?c=member&a=order&flag=postgoods');
 }
+//充值成功
+elseif($a == 'rechargeSuccess'){
+    $ordernum = isset($ordernum) ? $ordernum : '';
+    $orderInfo = $dosql->GetOne("SELECT o.*,m.openid FROM `#@__order_recharge` o LEFT JOIN #@__member m ON o.uid=m.id WHERE o.ordernum='{$ordernum}'");
+    if (!$orderInfo) {
+        ShowMsg("未查询到相关充值记录!", "index.php?c=member&a=recharge");
+        exit();
+    }
+
+    //支付成功
+    if($dosql->ExecNoneQuery("update `#@__order_recharge` set status = 1 where ordernum = '{$orderInfo['ordernum']}'")){
+        $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '{$orderInfo['money']}' where id = '{$orderInfo['uid']}' ");
+        //充值充值佣金的结算
+        $flag = generate_seed_commission($orderInfo['uid'],$orderInfo['money'],$ordernum);
+        ShowMsg('充值成功',"index.php?c=member");
+        exit;
+    } else {
+        ShowMsg('充值失败',"index.php?c=member&a=recharge");
+        exit;
+    }
+
+}
+
+
 
 //申请退货换货
 else if ($a == 'applyReturn') {
@@ -491,26 +555,150 @@ else if ($a == 'applyReturn') {
 
 //升级
 else if( $a == 'upgrade') {
-    $seo = setSeo('升级', $cfg_keyword, $cfg_description);
+    $type = isset($type) ? $type : '';
+    $options = [
+        'common' => $cfg_common_copper.'-'.'(普)',
+        'common_2' => 2*$cfg_common_copper.'-'.'(普)',
+        'common_3' => 3*$cfg_common_copper.'-'.'(普)',
+        'common_4' => 4*$cfg_common_copper.'-'.'(普)',
+        'common_5' => 5*$cfg_common_copper.'-'.'(普)',
+        'common_6' => 6*$cfg_common_copper.'-'.'(普)',
+        'common_7' => 7*$cfg_common_copper.'-'.'(普)',
+        'common_8' => 8*$cfg_common_copper.'-'.'(普)',
+        'common_9' => 9*$cfg_common_copper.'-'.'(普)',
+        'common_10' => 10*$cfg_common_copper.'-'.'(普)',
+        'copper' => $cfg_copper_silver.'-'.'(铜)',
+        'silver' => $cfg_silver_golden.'-'.'(银)',
+    ];
+
+    if($type == 'upgrade') {
+        $seed = $_POST['seed'];
+        $param = explode('-',$seed);
+        $return_array = array('status' => false,'msg'=>'');
+        if(strstr($param[1],'普')){
+            $num = $param[0]/$cfg_common_copper;
+            $seed_type = 3;
+            if($param[0] > $userInfo['yongjin']){
+                $return_array['msg'] = "您的普通种子数量不足";
+            }
+            echo json_encode($return_array);
+            exit;
+        } elseif(strstr($param[1],'铜')){
+            $num = $param[0]/$cfg_copper_silver;
+            $seed_type = 2;
+            if($param[0] > $userInfo['copper_seed']){
+                $return_array['msg'] = "您的铜种子数量不足";
+            }
+            echo json_encode($return_array);
+            exit;
+        }elseif(strstr($param[1],'银')){
+            $num = $param[0]/$cfg_silver_golden;
+            $seed_type = 1;
+            if($param[0] > $userInfo['silver_seed']){
+                $return_array['msg'] = "您的银种子数量不足";
+            }
+            echo json_encode($return_array);
+            exit;
+        }
+        $time = time();
+        $sql = "insert into `#@__seed_water` (`uid`, `num`, `seed_type`, `posttime`) VALUES ('{$userInfo['id']}', '$num', '$seed_type', '$time')";
+        if($dosql->ExecNoneQuery($sql)){
+            if($seed_type == 3) {
+                $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin - '{$param[0]}', copper_seed = copper_seed + '$num' where id = '{$userInfo['id']}' ");
+            } elseif($seed_type == 2) {
+                $dosql->ExecNoneQuery("update `#@__member` set copper_seed = copper_seed - '$num', silver_seed = silver_seed + 1 where id = '{$userInfo['id']}' ");
+            } elseif($seed_type == 1) {
+                $dosql->ExecNoneQuery("update `#@__member` set silver_seed = silver_seed - '$num', golden_seed = golden_seed + 1 where id = '{$userInfo['id']}' ");
+            }
+
+
+            $return_array['status'] = 'true';
+            echo json_encode($return_array);
+            exit;
+        } else {
+            $return_array['msg'] = "升级失败";
+            echo json_encode($return_array);
+            exit;
+        }
+
+    }
+
+    $seo = setSeo('种子升级', $cfg_keyword, $cfg_description);
 }
 
 //转让
 else if( $a == 'transfer') {
-    $seo = setSeo('转让', $cfg_keyword, $cfg_description);
+    $seo = setSeo('种子转让', $cfg_keyword, $cfg_description);
 }
 
 //权限
 else if( $a == 'competence') {
-    $seo = setSeo('权限', $cfg_keyword, $cfg_description);
+
+    $seo = setSeo('种子权限', $cfg_keyword, $cfg_description);
 }
 
 //查看爱心屋
 else if( $a == 'check_house') {
+    $select = isset($select) ? $select : '';
+    $list = array();
+
+    $sql = "select r.title2,d.dataname,d.datavalue from `#@__children` r LEFT JOIN `#@__cascadedata` d ON r.address_prov = d.datavalue where d.datagroup='area' and r.checkinfo='true'";
+    $dosql->Execute($sql);
+    while($row = $dosql->GetArray()){
+        $area[] = $row;
+    }
+
+        $ssql = "select * from `#@__children` where  checkinfo = 'true' and title2 != '' ";
+        if(!empty($prov)){
+            $ssql .=" and address_prov = '$prov' ";
+        }
+        $dosql->Execute($ssql);
+        while($house = $dosql->GetArray()){
+            $list[] = $house;
+        }
+
+
+
     $seo = setSeo('查看爱心屋', $cfg_keyword, $cfg_description);
 }
 
 //申请爱心屋
 else if( $a == 'apply_house') {
+    $type = isset($type) ? $type : 'country';
+    $save_action = isset($save_action) ? $save_action : '';
+    if($save_action == 'save'){
+        switch(type){
+            case 'prov' :
+                $apply_type = 1;
+                break;
+            case 'city' :
+                $apply_type = 2;
+                break;
+            case 'area' :
+                $apply_type = 3;
+                break;
+            case 'country' :
+                $apply_type = 4;
+                break;
+            default:
+                $apply_type = 4;
+                break;
+        }
+
+        $param = $_POST;
+        $memberInfo = $dosql->GetOne("select * from `#@__member` where mem_number = '{$param['member_no']}' ");
+        if(empty($memberInfo)){
+            ShowMsg('会员编号不存在');exit;
+        }
+        $time = time();
+        $sql = "insert into `#@__apply_proxy` (`uid`,`address`,`username`,`member_no`,`id_no`,`mobile`,`create_at`,`apply_type`) VALUES ('{$userInfo['id']}',
+        '{$param['address']}', '{$param['username']}',  '{$param['member_no']}', '{$param['id_no']}', '{$param['mobile']}','$time','$apply_type')";
+        if($dosql->ExecNoneQuery($sql)){
+            ShowMsg('申请成功');
+        } else {
+            ShowMsg('申请失败');
+        }
+    }
     $seo = setSeo('申请爱心屋', $cfg_keyword, $cfg_description);
 }
 

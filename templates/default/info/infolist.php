@@ -5,6 +5,16 @@
     <body>
 <section class="wrap">
   <section class="main">
+
+      <div class="bg-w myOrder-tab">
+          <ul>
+              <li <?php if( $clsid == 9) { ?> class="on" <?php } ?> style=" width: 33.3%;"><a href="index.php?c=info&a=infolist&clsid=9">活动新闻</a></li>
+              <li <?php if( $clsid == 10) { ?> class="on" <?php } ?>  style=" width: 33.3%;"><a href="index.php?c=info&a=infolist&clsid=10">爱心新闻</a></li>
+              <li <?php if( $clsid == 11) { ?> class="on" <?php } ?>  style=" width: 33.3%;"><a href="index.php?c=info&a=infolist&clsid=11">其他新闻</a></li>
+          </ul>
+      </div>
+
+
     <section class="bg-w inner-active-dyanmic">
       <ul>
       <?php foreach ($records['data'] as $k=>$v):?>

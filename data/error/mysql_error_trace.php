@@ -92,3 +92,14 @@
 <?php exit(); ?> Time: 2016-08-11 10:50:15. || Page: /index.php || IP: 127.0.0.1 || Error: Erreur de syntaxe près de '10:48 >= starttime  and starttime <= 1470883815 and 1470883815 <= endtime' à la ligne 1 Error sql: select * from `lxlp_infolist` where classid=5 AND delstate='' AND checkinfo='true'  and 2016-08-11 10:48 >= starttime  and starttime <= 1470883815 and 1470883815 <= endtime
 <?php exit(); ?> Time: 2016-08-11 10:50:16. || Page: /index.php || IP: 127.0.0.1 || Error: Erreur de syntaxe près de '10:48 >= starttime  and starttime <= 1470883816 and 1470883816 <= endtime' à la ligne 1 Error sql: select * from `lxlp_infolist` where classid=5 AND delstate='' AND checkinfo='true'  and 2016-08-11 10:48 >= starttime  and starttime <= 1470883816 and 1470883816 <= endtime
 <?php exit(); ?> Time: 2016-08-11 10:50:16. || Page: /index.php || IP: 127.0.0.1 || Error: Erreur de syntaxe près de '10:48 >= starttime  and starttime <= 1470883816 and 1470883816 <= endtime' à la ligne 1 Error sql: select * from `lxlp_infolist` where classid=5 AND delstate='' AND checkinfo='true'  and 2016-08-11 10:48 >= starttime  and starttime <= 1470883816 and 1470883816 <= endtime
+<?php exit(); ?> Time: 2016-08-15 10:51:00. || Page: /myadmin/infolist_save.php || IP: 127.0.0.1 || Error: Column count doesn't match value count at row 1 Error sql: INSERT INTO `lxlp_infolist` 
+    (commission_percent,
+    isgift,auid,goodsprice,goodsunit,goodstitle,starttime,endtime,videourl,
+    siteid, classid, parentid, parentstr, mainid, mainpid, mainpstr, title, colorval, boldval, flag, 
+    source, author, linkurl, keywords, description, content, picurl, picarr, orderid, hits, posttime, 
+    checkinfo ) 
+    VALUES ('','','','','','','','false','70',
+    12,'200','西陆科技','无患子菩提种子天然洁面手工皂','1471229276','1471229276','',
+    '1', '8', '0', '0,', '-1', '-1', '', '帮困活动认购1', '', '', '',
+     '', 'admin', '', '', '帮困活动认购1', '帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1帮困活动认购1', 'uploads/image/20160815/1471231063.jpg', '', '15', '79', '1471229276',
+     'true' )

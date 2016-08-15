@@ -539,6 +539,7 @@ function getInfoList($page, $clsid, $a, $type=3){
         $row['btnurl']='';
         $row['btntext']='';
         $row['css']='';
+
         //status-3
         $curtime = time();
         if($curtime<$row['starttime'] && $type == 1){
@@ -737,7 +738,7 @@ function generate_percentage($ordernum){
 * @param string $ordernum
 * @return boolean
 */
-function operate_commision($uid, $integral, $type, $content, $ordernum='', $fuid, $wxmsg,$type=1){
+function operate_commision($uid, $integral, $types, $content, $ordernum='', $fuid, $wxmsg,$type=1,$from=''){
     global $dosql;
 
     // 微信提示到账
@@ -746,9 +747,9 @@ function operate_commision($uid, $integral, $type, $content, $ordernum='', $fuid
 
     $time = time();
     if($integral > 0){
-        $integral = $type.$integral;
-        $ret = $dosql->ExecNoneQuery("INSERT INTO `#@__integral`(uid,ordernum,integral,posttime,content,fuid,type)
-            VALUES ({$uid},'{$ordernum}','{$integral}',{$time},'{$content}',{$fuid},$type)");
+        $integral = $types.$integral;
+        $ret = $dosql->ExecNoneQuery("INSERT INTO `#@__integral`(uid,ordernum,integral,posttime,content,fuid,`type`,`from`)
+            VALUES ({$uid},'{$ordernum}','{$integral}',{$time},'{$content}',{$fuid},$type,'$from')");
         return $ret;
     }
 }
@@ -890,3 +891,97 @@ function calcPrice($goods){
     }
     return $price;
 }
+
+
+
+function dmkdir($path){
+    $dir = date("Ymd",time());
+    if(!is_dir($path.'/'.$dir)){
+        mkdir($path.'/'.$dir);
+    }
+    return $path.'/'.$dir.'/';
+}
+
+function upload($path, $file_name) {
+    $upfile = $_FILES[$file_name];
+    //return $upfile;
+    $fname=$upfile["name"];
+    $file_path=pathinfo($fname);
+    //后缀名
+    $extension=$file_path["extension"];
+    //便于以后转移文件时命名
+    $type = $upfile["type"];
+    //上传文件的类型
+    $size = $upfile["size"];
+    //上传文件的大小
+    $tmp_name = $upfile["tmp_name"];
+    //用户上传文件的临时名称
+    $return = array(
+        'success'=>false,
+        'path'=>"",
+        'name'=>"",
+        'real_name'=>"",
+        'message'=>"",
+    );
+    $ok = 1;
+
+    if ($size > 5000000)//大小限定为5M
+    {
+        $ok = 0;
+    }
+    if ($ok == 1) {
+        //用一个数组类型的字符串存放上传文件的信息
+        $name =  time() . "." . $extension;
+        @move_uploaded_file($tmp_name, $path . basename($name));
+        $return['success'] = true;
+        $return['path'] = $path;
+        $return['name'] = $name;
+        $return['real_name']=$fname;
+        return $return;
+    } else {
+        $return['message']="文件过大！";
+        return $return;
+    }
+}
+
+/**
+ * 会员编号生成
+ */
+function make_member_number($uid){
+    return date("Ymd",time()).rand(10,99).$uid;
+}
+
+/**
+ * 充值 种子佣金的结算
+ * $uid 用户id
+ * $money 金额
+ * $ordernum 订单号
+ */
+function generate_seed_commission($uid = '', $moeny='',$ordernum=''){
+    global $dosql, $cfg_recharge_self, $cfg_recharge_parent, $cfg_recharge_p_parent;
+    $memberInfo = $dosql->GetOne("select * from `#@__member` where id = '$uid'");
+    if(empty($memberInfo)){
+        return false;
+    }
+
+    $yongjin    = round($cfg_recharge_self * $moeny,2); //给自己返佣的种子
+    $yongjin_parent = round($cfg_recharge_parent * $moeny,2); //给上家返佣的种子
+    $yongjin_p_parent = round($cfg_recharge_p_parent * $moeny,2); // 给上上家返佣的种子
+
+    if($dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin' where id = '{$memberInfo['id']}'")) {
+        operate_commision($memberInfo['id'], $yongjin, '+', '充值返现', $ordernum, $memberInfo['id'],'充值返现',1,'recharge');
+
+        //上家
+        if($memberInfo['recUid'] != 0  && $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin_parent' where id = '{$memberInfo['recUid']}'")){
+            operate_commision($memberInfo['recUid'], $yongjin_parent, '+', '下线充值返现', $ordernum, $memberInfo['id'],'下线充值返现',1,'recharge');
+        }
+        //上上家
+        if($memberInfo['recUid2'] != 0  && $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin_p_parent' where id = '{$memberInfo['recUid2']}'")){
+            operate_commision($memberInfo['recUid2'], $yongjin_p_parent, '+', '下线充值返现', $ordernum, $memberInfo['id'],'下线充值返现',1,'recharge');
+        }
+
+
+    }
+
+}
+//function operate_commision($uid, $integral, $type, $content, $ordernum='', $fuid, $wxmsg,$type=1){}

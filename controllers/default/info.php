@@ -22,7 +22,7 @@ if ($a == 'activitylist') {
     if($activity_type == 'adopt'){
         $clsid = 5 ; //认养
     } elseif($activity_type == 'subscription') {
-        $clsid = 5 ; // 认购
+        $clsid = 8 ; // 认购
     } else {
         $clsid = isset($clsid) ? intval($clsid) : 0;
     }
@@ -96,7 +96,7 @@ elseif ($a == 'activitydetails'){
 // 庙宇列表
 if ($a == 'infolist') {
     $page = empty($page)?1:intval($page);
-    $clsid = isset($clsid) ? intval($clsid) : 0;
+    $clsid = isset($clsid) ? intval($clsid) : 9;
     $records = getInfoList($page, $clsid, $a);
 
     $infoclass = $dosql->GetOne("SELECT * FROM `#@__infoclass` WHERE id={$clsid}");

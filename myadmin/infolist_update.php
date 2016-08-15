@@ -280,38 +280,7 @@ IsModelPriv('infolist');
         			<span class="cnote">返利给活动发起人的比例</span>
         			</td>
         		</tr>
-                <tr class="nb">
-                    <td height="40" align="right">是否抽奖：</td>
-                    <td>
-                        <label><input type="radio" name="islucky" value="true" <?php if ($row['islucky'] == 'true') echo 'checked="checked"'; ?> /> 是 &nbsp;</label>
-                        <label><input type="radio" name="islucky" value="false" <?php if ($row['islucky'] == 'false') echo 'checked="checked"'; ?>/> 否</label>
-                        <span class="cnote">选择“否”, 活动结束后没有抽奖环节</span>
-                    </td>
-                </tr>
-                <tr>
-        			<td height="35" align="right">一等奖奖项：</td>
-        			<td><input name="one_desc" type="text" id="one_desc" class="input"  value="<?php echo $row['one_desc'];?>" /></td>
-        		</tr>
-        		<tr>
-        			<td height="35" align="right">一等奖数量：</td>
-                    <td><input name="one_left" type="text" id="one_left" class="input"  value="<?php echo $row['one_left'];?>" /></td>
-        		</tr>
-        		<tr>
-        			<td height="35" align="right">二等奖奖项：</td>
-        			<td><input name="two_desc" type="text" id="two_desc" class="input" value="<?php echo $row['two_desc'];?>" /></td>
-        		</tr>
-        		<tr>
-        			<td height="35" align="right">二等奖数量：</td>
-                    <td><input name="two_left" type="text" id="two_left" class="input"  value="<?php echo $row['one_left'];?>" /></td>
-        		</tr>
-        		<tr>
-        			<td height="35" align="right">三等奖奖项：</td>
-        			<td><input name="three_desc" type="text" id="three_desc" class="input" value="<?php echo $row['three_desc'];?>" /></td>
-        		</tr>
-        		<tr>
-        			<td height="35" align="right">三等奖数量：</td>
-                    <td><input name="three_left" type="text" id="three_left" class="input"  value="<?php echo $row['two_left'];?>" /></td>
-        		</tr>
+
                 <!-- 活动模块 -->
                 <tr class="nb">
                     <td colspan="2" height="26"><div class="line"> </div></td>

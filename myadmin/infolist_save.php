@@ -223,12 +223,12 @@ if ($action == 'add') {
     }
 
     $sql = "INSERT INTO `$tbname` 
-    (one_desc,one_left,two_desc,two_left,three_desc,three_left,commission_percent,
-    islucky,isgift,auid,goodsprice,goodsunit,goodstitle,starttime,endtime,videourl,
+    (commission_percent,
+    isgift,auid,goodsprice,goodsunit,goodstitle,starttime,endtime,videourl,
     siteid, classid, parentid, parentstr, mainid, mainpid, mainpstr, title, colorval, boldval, flag, 
     source, author, linkurl, keywords, description, content, picurl, picarr, orderid, hits, posttime, 
     checkinfo {$fieldname}) 
-    VALUES ('$one_desc','$one_left','$two_desc','$two_left','$three_desc','$three_left','$islucky','$isgift','$commission_percent',
+    VALUES ('$isgift','$commission_percent',
     $auid,'$goodsprice','$goodsunit','$goodstitle','$starttime','$endtime','$videourl',
     '$cfg_siteid', '$classid', '$parentid', '$parentstr', '$mainid', '$mainpid', '$mainpstr', '$title', '$colorval', '$boldval', '$flag',
      '$source', '$author', '$linkurl', '$keywords', '$description', '$content', '$picurl', '$picarr', '$orderid', '$hits', '$posttime',
@@ -446,8 +446,8 @@ else if ($action == 'update') {
     }
 
 
-    $sql = "UPDATE `$tbname` SET  one_desc='$one_desc',one_left='$one_left',two_desc='$two_desc',two_left='$two_left',three_desc='$three_desc',three_left='$three_left',commission_percent='$commission_percent',
-    islucky='$islucky',isgift='$isgift',auid=$auid,goodsprice='$goodsprice',goodsunit='$goodsunit',
+    $sql = "UPDATE `$tbname` SET commission_percent='$commission_percent',
+    isgift='$isgift',auid=$auid,goodsprice='$goodsprice',goodsunit='$goodsunit',
     goodstitle='$goodstitle',starttime='$starttime',endtime='$endtime',videourl='$videourl',
     siteid='$cfg_siteid', classid='$classid', parentid='$parentid', parentstr='$parentstr', mainid='$mainid', 
     mainpid='$mainpid', mainpstr='$mainpstr', title='$title', colorval='$colorval', boldval='$boldval', 

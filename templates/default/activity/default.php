@@ -19,7 +19,7 @@
                     <li><a href="index.php?c=info&a=activitylist&activity_type=subscription">帮困活动认购</a></li>
                     <li><a href="index.php?c=activity&a=apply">种子活动申请</a></li>
                     <li><a href="index.php?c=child_apply">智残儿童申请</a></li>
-                    <li><a href="index.php?c=info&a=infolist&clsid=6">种子新闻动态</a></li>
+                    <li><a href="index.php?c=info&a=infolist&clsid=9">种子新闻动态</a></li>
                     <li><a href="#">种子活动交友</a></li>
                 </ul>
             </div>
