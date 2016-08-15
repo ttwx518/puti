@@ -36,7 +36,7 @@ if(!empty($key_city)){
     $sql .= " AND address_city = '$key_city'";
 }
 
-$sql .= " order by hot desc ";
+$sql .= " order by hot asc ";
 
 $dosql->Execute($sql, 'children');//AND cr.areaid=$aid order by cr.orderid
 while ($row = $dosql->GetArray('children')) {
