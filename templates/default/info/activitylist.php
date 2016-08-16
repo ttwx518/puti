@@ -1,6 +1,6 @@
 <?php require_once TMPL_DIR . 'public/new_header.php'; ?>
 <body>
-<header> <a href="javascript:history.back()" class="back"></a> <span class="title"><?php echo $infoclass['classname'] ;?></span></header>
+<?php require_once TMPL_DIR . 'public/new_header_back.php'; ?>
 <section class="main">
    <form action="" method="get">
        <input type="hidden" name="c" value="info" />

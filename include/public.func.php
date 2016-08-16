@@ -984,4 +984,44 @@ function generate_seed_commission($uid = '', $moeny='',$ordernum=''){
     }
 
 }
-//function operate_commision($uid, $integral, $type, $content, $ordernum='', $fuid, $wxmsg,$type=1){}
+
+/**
+ * 判断系统 金 银 铜 种子数量够不够
+ * $seed_type 1 金 2 银 3 铜
+ */
+function seed_enough($seed_type=''){
+    global $dosql,$cfg_golden_seed,$cfg_silver_seed,$cfg_copper_seed;
+    $seed_num = $dosql->GetOne("select count(num) as use_total from `#@__seed_water` where seed_type = '$seed_type' ");
+    $diff_num = 0;
+    switch ($seed_type) {
+        case 1 :
+            $diff_num = $cfg_golden_seed - $seed_num['use_total'] >= 0 ? $cfg_golden_seed - $seed_num['use_total'] : 0; //金
+            break;
+        case 2 :
+            $diff_num = $cfg_silver_seed - $seed_num['use_total'] >= 0 ? $cfg_silver_seed - $seed_num['use_total'] : 0; //银
+            break;
+        case 3 :
+            $diff_num = $cfg_copper_seed - $seed_num['use_total'] >= 0 ? $cfg_copper_seed - $seed_num['use_total'] : 0; //铜
+            break;
+    }
+    return $diff_num;
+}
+
+/**
+ * 生成 金 银 铜 种子的 流水
+ */
+function make_seed_water($options = array()) {
+    global $dosql;
+    $sql = "insert into `#@__seed_water` (`uid`, `num`, `seed_type`, `posttime`) VALUES ('{$options['uid']}', '{$options['num']}', '{$options['seed_type']}', '{$options['posttime']}')";
+    $dosql->ExecNoneQuery($sql);
+}
+
+/**
+ * 获取城市名称
+ */
+
+function get_city_name($datavalue=''){
+    global $dosql;
+    $city = $dosql->GetOne("select * from `#@__cascadedata` where datavalue='$datavalue' and datagroup='area'");
+    return @ $city['dataname'];
+}

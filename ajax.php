@@ -39,6 +39,7 @@ if ($action == 'addCart') {
 elseif ($action == 'buyNow') {
     $id = isset($id) ? intval($id) : 0;
     $num = isset($num) ? intval($num) : 0;
+    $type = isset($type) ? $type : '-1';
     if (!$id || $num < 0) {
         echo json_encode(array('status' => false, 'msg' => '参数错误'));
         exit();
@@ -66,7 +67,7 @@ elseif ($action == 'buyNow') {
 //         echo json_encode(array('status' => false, 'msg' => '请联系货主申请分销'));
 //         exit();
     }
-    $totalNum = $docart->buyNow($id, $num);
+    $totalNum = $docart->buyNow($id, $num,$type);
     echo json_encode(array('status' => true, 'msg' => '立即购买成功', 'totalNum' => $totalNum));
     exit();
 }

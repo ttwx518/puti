@@ -23,7 +23,7 @@ $statusArr = array(0=>'待审核',1=>'审核失败',2=>'审核成功');
             //初始化参数
             $begintime = isset($begintime) ? strtotime($begintime) : '' ;
             $endtime = isset($endtime) ? strtotime($endtime) : '' ;
-            $sql = "SELECT * FROM #@__withdraw_record WHERE status<>0";
+            $sql = "SELECT * FROM #@__withdraw_record WHERE 1 ";
             if ($begintime)
                 $sql .= " AND createdate>={$begintime}";
             if ($endtime)

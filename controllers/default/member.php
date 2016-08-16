@@ -210,6 +210,95 @@ else if($a == 'recharge'){
 }
 // 提现
 else if ($a == 'ktx') {
+    $withdraw = array('50','100','150','200','250','300','350','400','450','500','550','600','650','700','750','800','850','900','950','1000','2000','3000','4000',
+        '5000','6000','7000','8000','9000','10000');
+    $seed_widthdraw = round($userInfo['yongjin'] * 0.65,0);
+    $seed_money     = round($seed_widthdraw/100,2);
+    $type = isset($type) ? $type : '';
+    if($type == 'tixian'){
+        $seed_widthdraw = $_POST['seed_widthdraw'];
+        $seed_money = $_POST['seed_money'];
+        if($seed_money < 50){
+            echo "最低50元提现";exit;
+        }
+        $cost = $seed_money * 0.1;
+        $amount = $seed_money - $cost;
+        $time = time();
+        $flag = false;
+        $sql = "insert into `#@__withdraw_record` (`uid`,`truename`, `amount`, `createtime`, `createdate`, `status`, `cost`) VALUES ('{$userInfo['id']}', '{$userInfo['wechat_nickname']}',
+        '$amount','$time', '$time', '0', '$cost')";
+        if( $dosql->ExecNoneQuery($sql) ) {
+           $flag =  $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin - '$seed_widthdraw', totalYongjin = totalYongjin + '$seed_widthdraw' where id = '{$userInfo['id']}'");
+        }
+        if($flag){
+            echo "提现申请成功";exit;
+        } else {
+            echo "提现申请失败";exit;
+        }
+
+    }
+    elseif($type == 'duihuang') {
+        $number = $_POST['number'];
+        $seed_type = $_POST['seed_type'];
+        $diff_num  = seed_enough($seed_type);
+        if($seed_type == 1){
+            $silver_seed_number = $cfg_silver_golden * $number;
+            $sql = "update `#@__member` set golden_seed = golden_seed + '$number', silver_seed = silver_seed - '$silver_seed_number' where id = '{$userInfo['id']}'";
+            if($silver_seed_number > $userInfo['silver_seed']){
+                echo "你的银种子数量不足，无法兑换";exit;
+            }
+            if($diff_num == 0){
+                echo "系统金种子已用完，无法兑换";exit;
+            }
+
+        } elseif($seed_type == 2) {
+            $copper_seed_number = $cfg_copper_silver * $number;
+            $sql = "update `#@__member` set silver_seed = silver_seed + '$number', copper_seed = copper_seed - '$copper_seed_number' where id = '{$userInfo['id']}'";
+            if($cfg_copper_silver > $userInfo['copper_seed']){
+                echo "你的铜种子数量不足，无法兑换";exit;
+            }
+            if($diff_num == 0){
+                echo "系统银种子已用完，无法兑换";exit;
+            }
+        } elseif($seed_type == 3) {
+            $common_seed_number = $cfg_common_copper * $number;
+            $sql = "update `#@__member` set copper_seed = copper_seed + '$number', yongjin = yongjin - '$common_seed_number' where id = '{$userInfo['id']}'";
+            if($common_seed_number > $userInfo['yongjin']){
+                echo "你的普通种子数量不足，无法兑换";exit;
+            }
+            if($diff_num == 0){
+                echo "系统铜种子已用完，无法兑换";exit;
+            }
+        }
+
+        if($dosql->ExecNoneQuery($sql)){
+            $options = [
+                'uid' => $userInfo['id'],
+                'num' => $number,
+                'seed_type' => $seed_type,
+                'posttime' => time()
+            ];
+            make_seed_water($options);
+            echo "兑换成功";exit;
+        } else {
+            echo "兑换失败";exit;
+        }
+    }
+
+    $csql = "select * from `#@__withdraw_record` where uid = '{$userInfo['id']}' ";
+    if(!empty($starttime)){
+        $starttime = strtotime($starttime);
+        $csql .= " and createtime >= $starttime";
+    }
+    if(!empty($endtime)){
+        $endtime = strtotime($endtime);
+        $csql .= " and createtime <= $endtime";
+    }
+    $dosql->Execute($csql);
+    while($row = $dosql->GetArray()) {
+        $list[] = $row;
+    }
+
     $seo = setSeo('种子提现', $cfg_keyword, $cfg_description);
 }
 
@@ -575,48 +664,81 @@ else if( $a == 'upgrade') {
         $seed = $_POST['seed'];
         $param = explode('-',$seed);
         $return_array = array('status' => false,'msg'=>'');
+        $seed_type = 0;
         if(strstr($param[1],'普')){
             $num = $param[0]/$cfg_common_copper;
             $seed_type = 3;
             if($param[0] > $userInfo['yongjin']){
-                $return_array['msg'] = "您的普通种子数量不足";
+                $return_array['msg'] = "您的普通种子数量不足,暂时不能升级到铜种子";
+                echo json_encode($return_array);
+                exit;
             }
-            echo json_encode($return_array);
-            exit;
+
         } elseif(strstr($param[1],'铜')){
             $num = $param[0]/$cfg_copper_silver;
             $seed_type = 2;
             if($param[0] > $userInfo['copper_seed']){
-                $return_array['msg'] = "您的铜种子数量不足";
+                $return_array['msg'] = "您的铜种子数量不足,暂时不能升级到银种子";
+                echo json_encode($return_array);
+                exit;
             }
-            echo json_encode($return_array);
-            exit;
+
         }elseif(strstr($param[1],'银')){
             $num = $param[0]/$cfg_silver_golden;
             $seed_type = 1;
             if($param[0] > $userInfo['silver_seed']){
-                $return_array['msg'] = "您的银种子数量不足";
+                $return_array['msg'] = "您的银种子数量不足,暂时不能升级到金种子";
+                echo json_encode($return_array);
+                exit;
+            }
+
+        }
+        $diff_num = seed_enough($seed_type); //判断种子是否已用完
+        if($diff_num == 0){
+            if($seed_type == 1){
+                $return_array['msg'] = "系统生成的金种子数量已用完，暂时无法升级";
+            } elseif($seed_type == 2){
+                $return_array['msg'] = "系统生成的银种子数量已用完，暂时无法升级";
+            } elseif($seed_type == 3){
+                $return_array['msg'] = "系统生成的铜种子数量已用完，暂时无法升级";
+            } elseif($seed_type == 0){
+                $return_array['msg'] = "请选择要升级的种子";
             }
             echo json_encode($return_array);
             exit;
         }
-        $time = time();
-        $sql = "insert into `#@__seed_water` (`uid`, `num`, `seed_type`, `posttime`) VALUES ('{$userInfo['id']}', '$num', '$seed_type', '$time')";
-        if($dosql->ExecNoneQuery($sql)){
-            if($seed_type == 3) {
-                $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin - '{$param[0]}', copper_seed = copper_seed + '$num' where id = '{$userInfo['id']}' ");
-            } elseif($seed_type == 2) {
-                $dosql->ExecNoneQuery("update `#@__member` set copper_seed = copper_seed - '$num', silver_seed = silver_seed + 1 where id = '{$userInfo['id']}' ");
-            } elseif($seed_type == 1) {
-                $dosql->ExecNoneQuery("update `#@__member` set silver_seed = silver_seed - '$num', golden_seed = golden_seed + 1 where id = '{$userInfo['id']}' ");
-            }
 
+        $options = array();
+        $flag    = false;
+        if($seed_type == 3) {
+            $flag = $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin - '{$param[0]}', copper_seed = copper_seed + '$num' where id = '{$userInfo['id']}' ");
+            $options['uid'] = $userInfo['id'];
+            $options['num'] = $num;
+            $options['seed_type'] = $seed_type;
+            $options['posttime'] = time();
+            make_seed_water($options);
+        } elseif($seed_type == 2) {
+            $flag = $dosql->ExecNoneQuery("update `#@__member` set copper_seed = copper_seed - '$num', silver_seed = silver_seed + 1 where id = '{$userInfo['id']}' ");
+            $options['uid'] = $userInfo['id'];
+            $options['num'] = 1;
+            $options['seed_type'] = $seed_type;
+            $options['posttime'] = time();
+            make_seed_water($options);
+        } elseif($seed_type == 1) {
+            $flag =  $dosql->ExecNoneQuery("update `#@__member` set silver_seed = silver_seed - '$num', golden_seed = golden_seed + 1 where id = '{$userInfo['id']}' ");
+            $options['uid'] = $userInfo['id'];
+            $options['num'] = 1;
+            $options['seed_type'] = $seed_type;
+            $options['posttime'] = time();
+            make_seed_water($options);
+        }
 
-            $return_array['status'] = 'true';
+        if($flag) {
+            $return_array['status'] = true;
             echo json_encode($return_array);
             exit;
         } else {
-            $return_array['msg'] = "升级失败";
+            $return_array['msg'] = '升级失败';
             echo json_encode($return_array);
             exit;
         }
@@ -628,6 +750,53 @@ else if( $a == 'upgrade') {
 
 //转让
 else if( $a == 'transfer') {
+    $type = isset($type) ? $type : '';
+    if($type == 'ensure') {
+        $member_exists = $dosql->GetOne("select * from `#@__member` where mem_number = '$member_no' ");
+        if(!empty($member_exists)){
+            echo '会员'.$member_exists['wechat_nickname'].'存在';
+            exit;
+        } else {
+            echo "会员不存在";
+            exit;
+        }
+    } elseif($type == 'confirm') {
+        $member_no = isset($member_no) ? $member_no : 0;
+        $golden_seed = isset($golden_seed) ? $golden_seed : 0;
+        $silver_seed = isset($silver_seed) ? $silver_seed : 0;
+        $member_exists = $dosql->GetOne("select * from `#@__member` where mem_number = '$member_no' ");
+        if(empty($member_exists)){
+            echo "会员不存在";
+            exit;
+        }
+        if($member_exists['id'] == $userInfo['id']) {
+            echo "自己不能转让给自己";
+            exit;
+        }
+        if($golden_seed == 0 && $silver_seed == 0){
+            echo "请填写你要转让的种子数量";
+            exit;
+        }
+        if($golden_seed > $userInfo['golden_seed'] || $silver_seed > $userInfo['silver_seed']){
+            echo "您的种子不足";
+            exit;
+        }
+        $sql = "update `#@__member` set golden_seed = golden_seed - $golden_seed, silver_seed = silver_seed - $silver_seed where id = '{$userInfo['id']}' ";
+        if($dosql->ExecNoneQuery($sql)) {
+            $flag = false;
+            $ssql = "update `#@__member` set golden_seed = golden_seed + $golden_seed, silver_seed = silver_seed + $silver_seed where id = '{$member_exists['id']}' ";
+            $flag = $dosql->ExecNoneQuery($ssql);
+
+        }
+        if($flag) {
+            echo "转让成功";
+            exit;
+        } else {
+            echo "转让失败";
+            exit;
+        }
+
+    }
     $seo = setSeo('种子转让', $cfg_keyword, $cfg_description);
 }
 

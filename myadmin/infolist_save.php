@@ -226,12 +226,12 @@ if ($action == 'add') {
     (commission_percent,
     isgift,auid,goodsprice,goodsunit,goodstitle,starttime,endtime,videourl,
     siteid, classid, parentid, parentstr, mainid, mainpid, mainpstr, title, colorval, boldval, flag, 
-    source, author, linkurl, keywords, description, content, picurl, picarr, orderid, hits, posttime, 
+    source, author, linkurl, keywords, description, content, picurl, picarr, orderid, hits, posttime,housenum
     checkinfo {$fieldname}) 
     VALUES ('$isgift','$commission_percent',
     $auid,'$goodsprice','$goodsunit','$goodstitle','$starttime','$endtime','$videourl',
     '$cfg_siteid', '$classid', '$parentid', '$parentstr', '$mainid', '$mainpid', '$mainpstr', '$title', '$colorval', '$boldval', '$flag',
-     '$source', '$author', '$linkurl', '$keywords', '$description', '$content', '$picurl', '$picarr', '$orderid', '$hits', '$posttime',
+     '$source', '$author', '$linkurl', '$keywords', '$description', '$content', '$picurl', '$picarr', '$orderid', '$hits', '$posttime','$housenum',
      '$checkinfo' {$fieldvalue})";
     if ($dosql->ExecNoneQuery($sql)) {
         header("location:$gourl");
@@ -452,7 +452,7 @@ else if ($action == 'update') {
     siteid='$cfg_siteid', classid='$classid', parentid='$parentid', parentstr='$parentstr', mainid='$mainid', 
     mainpid='$mainpid', mainpstr='$mainpstr', title='$title', colorval='$colorval', boldval='$boldval', 
     flag='$flag', source='$source', author='$author', linkurl='$linkurl', keywords='$keywords', description='$description', 
-    content='$content', picurl='$picurl', picarr='$picarr', orderid='$orderid', hits='$hits', posttime='$posttime', 
+    content='$content', picurl='$picurl', picarr='$picarr', orderid='$orderid', hits='$hits', posttime='$posttime', housenum = '$housenum',
     checkinfo='$checkinfo' {$fieldstr} WHERE id=$id";
     if ($dosql->ExecNoneQuery($sql)) {
         header("location:$gourl");

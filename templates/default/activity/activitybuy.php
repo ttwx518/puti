@@ -9,7 +9,7 @@
       <div class="b-b p10 inner-renyang-hd"><span class="fl col_0 tit goodstitle"></span><span class="fr col_r price">¥<strong class="fs24 goodsprice"></strong>/<strong class="fs24 goodsunit"></strong></span></div>
       <div class="p10 inner-renyang-bd">
         <div class="comform">
-          <form id="dataform" action="index.php?c=checkout" method="post" enctype="multipart/form-data">
+          <form id="dataform" action="index.php?c=activity_checkout" method="post" enctype="multipart/form-data">
             <ul>
               <li>
                 <div class="table">

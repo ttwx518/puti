@@ -1,8 +1,8 @@
 <?php require_once TMPL_DIR . 'public/new_header.php'; ?>
 <script src="<?php echo STATIC_PATH; ?>/new_html/js/ajaxupload.3.5.js"></script>
 <body>
+<?php require_once TMPL_DIR . 'public/new_header_back.php'; ?>
 
-<header><a href="javascript:history.back();" class="back"></a><span class="title">种子活动申请</span></header>
 <section class="main">
     <section class="b_g p20 application chilid_shenqing">
     	<form action="index.php?c=child_apply&a=save_apply" method="post" onsubmit=" return check_data(); " id="my_forms">
@@ -68,9 +68,9 @@
     </section>	
     <section class="article shenqing">
             <div class="br20 b_d inner_active_intro">
-                <div class="fs36 col_78 contit">上海爱心认购活动介绍</div>
+                <div class="fs36 col_78 contit"><?php echo $activity_news['title'];?></div>
                 <div class="p30 fs28 info">
-                    <p>2010年6月1日“关注孤儿，呼唤爱——中国品牌童装爱心之旅”更名为“关注儿童，呼唤爱”。“关注儿童，呼唤爱”是由中国品牌童装网主办，中国品牌服装网和时尚126商城承办，于2007年11月1日起开展的，一次大规模、大范围、众多品牌企业联手参与，以改善全国57.3万贫困儿童的生活和学习条件，让贫困儿童健康快乐成长的大型慈善爱心活动。</p>
+                    <?php echo $activity_news['content'];?>
                 </div>
             </div>
    		</section>

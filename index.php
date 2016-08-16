@@ -27,7 +27,7 @@ if ($c == 'info') {
     $tmplFileName = $a;
 }
 if (!file_exists($tmplPath . "{$tmplFileName}.php")) {
-    header("Location:index.php");
+   // header("Location:index.php");
 }
 
 //认购活动介绍

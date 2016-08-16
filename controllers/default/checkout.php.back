@@ -6,8 +6,8 @@ if(empty($userInfo)){
 /************************种子认养***************************/
 if (!empty($checkoutactivity)) {
     global $dosql,$cfg_freight_free,$cfg_freight,$userInfo;
+    $param = $_POST;
     $orderCart  = array('items' => array(), 'totalNum' => 0, 'totalAmount' => 0, 'totalWeight' => 0, 'totalFreight' => 0,'minYongjin'=>0,'minJifen'=>0);
-    
     $row = $dosql->GetOne("select * from #@__infolist where id={$id}");
     $row['salesprice'] = $row['goodsprice'];
     $orderCart['items'][$row['id']] = $row;
@@ -20,6 +20,16 @@ if (!empty($checkoutactivity)) {
         $orderCart['yunfei'] = $cfg_freight;//'运费 <font style="color: red">'.$cfg_freight . '</font> 元';
     }
     $orderCart['maxconmision'] = 0; //认养不能抵扣 //min($userInfo['yongjin'], ($orderCart['totalAmount']+$orderCart['yunfei']));
+    if($row['classid'] == 5 ){
+        //认养
+        $orderCart['items'][$row['id']]['cart_type'] = 2;
+    } elseif($row['classid'] == 6 ) {
+       $orderCart['items'][$row['id']]['cart_type'] = 3; //认购
+    }
+    $orderCart['message_id'] = $param['id'];
+
+
+
 }
 /************************种子认养***************************/
 else{
@@ -31,6 +41,8 @@ else{
     if (!$orderCart['items']) {
         redirect('index.php?c=cart');
     }
+    $orderCart['message_id'] = implode(',',array_keys($orderCart['items']));
+
 /************************正常购买***************************/
 }
 $areas = listarea(-1);
@@ -184,6 +196,10 @@ if (!empty($checkoutSub)) {
 
 //获取默认收货地址
 $address = $dosql->GetOne("SELECT * FROM #@__useraddress WHERE uid={$userInfo['id']} ORDER BY isDefault DESC,id DESC");
+if(empty($address)){
+    ShowMsg('请设置地址，并设置为默认','index.php?c=member&a=address');
+
+}
 
 //获取配送方式
 $postmodeArr = getPostmode();

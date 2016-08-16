@@ -1,79 +1,177 @@
-<?php require_once TMPL_DIR . 'public/new_header.php'; ?>
+<!doctype html>
+<html>
+    <?php require_once TMPL_DIR . 'public/header.php'; ?>
+    <?php require_once TMPL_DIR . 'public/header_back.php'; ?>
+    <body>
+	<section class="wrap">
+		<section class="main">
+			<section class="order-confim">
+			<form action="index.php?c=checkout" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="addressId" id='addressId' value="<?php echo isset($address['id']) ? $address['id'] : 0; ?>" />
+				<div class="arrow-icon hasdot bg-f order-confim-address">
+				<?php if(!empty($address) && is_array($address)): ?>
+				<?php $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];?>
+					<a href="javascript:void(0);" onclick="location.href='index.php?c=member&a=address&redirect=<?php echo $url?>'">
+						<div class="item-hd">
+							<span class="user"><?php echo $address['name']; ?></span><span class="tel"><?php echo $address['mobile']; ?></span>
+						</div>
+						<div class="item-bd"><?php cecho($areas, $address['prov'], 'dataname'); ?> <?php cecho($areas, $address['city'], 'dataname'); ?> <?php cecho($areas, $address['country'], 'dataname'); ?>  <?php echo $address['address']; ?></div>
+					</a>
+				<?php else: ?>
+                    <div class="c"><a href="index.php?c=member&a=editAddress&redirect=<?php echo $url?>" class="fs18 red">+新增收货地址</a></div>
+                <?php endif; ?>
+				</div>
+				<?php foreach($orderCart['items'] as $v): ?>
+				<?php $typepid = empty($v['typepid'])?0:$v['typepid']?>
+				<div class="table bg-w order-confim-item">
+					<div class="table-cell item-photo">
+						<img src="<?php echo $v['picurl']; ?>">
+					</div>
+					<div class="table-cell item-con">
+						<div class="fs16 tit"><?php echo $v['title']; ?></div>
+						<div class="num">数量×<?php echo $v['buyNum']; ?></div>
+						<div class="fs16 col_r price"><?php $typepid = empty($v['typepid'])?0:$v['typepid']; echo getTotalUnits2($typepid, $v['salesprice']);?></div>
+					</div>
+				</div>
+				<?php endforeach; ?>
+				<?php if($typepid==4):?>
+				<div class="bg-w order-confim-payment">
+				    <div class="item-hd">
+						<span class="col_0">支付方式</span>
+					</div>
+					<div class="item-bd">
+						<span class="col_0 fs15">种子抵扣</span><i>需要<?php echo $orderCart['totalAmount']+$orderCart['yunfei']?>粒种子(<font class="red">【可使用种子<?php echo $userInfo['yongjin']; ?>粒】</font>)</i>
+					    <input id="useintegral" name="useintegral" type="hidden" value="<?php echo $orderCart['maxconmision']?>" relvalue="<?php echo $orderCart['maxconmision']?>" />
+					    <input type="hidden" name="paymode" value="2" style="">
+						<!-- <div class="switch active">
+							<input type="checkbox"> <span></span>
+						</div> -->
+					</div>
+				</div>
+				<?php elseif ($typepid==20):?>
+				<div class="bg-w order-confim-payment">
+				    <div class="item-hd">
+						<span class="col_0">支付方式</span>
+					</div>
+					<div class="item-bd">
+						<span class="col_0 fs15">认养积分抵扣</span><i>需要<?php echo $orderCart['totalAmount']+$orderCart['yunfei']?>积分(<font class="red">【可使用积分<?php echo $userInfo['jifen']; ?>】</font>)</i>
+					    <input id="useintegral" name="useintegral" type="hidden" value="<?php echo $orderCart['maxconmision']?>" relvalue="<?php echo $orderCart['maxconmision']?>" />
+					    <input type="hidden" name="paymode" value="2" style="">
+						<!-- <div class="switch active">
+							<input type="checkbox"> <span></span>
+						</div> -->
+					</div>
+				</div>
+				<?php else:?>
+				<div class="bg-w  order-confim-payment">
+					<div class="item-hd">
+						<span class="col_0">支付方式</span>
+					</div>
+					<div class="item-bd">
+						<label class="check-label on"> <input type="hidden" name="paymode" value="1" style=""> &nbsp;
+						  <span class="col_0 fs15">微信支付</span><i>使用微信支付</i>
+						</label>
+					</div>
+				</div>
+    				<?php if(empty($v['auid'])):?>
+        				<div class="bg-w order-confim-balance order-confim-payment">
+        				    <div class="item-hd">
+        						<span class="col_0">种子抵扣</span>
+        					</div>
+        					<div class="item-bd">
+        						<span class="col_0 fs15">种子共计</span><i><font class="red"><?php echo $userInfo['yongjin']?></font>粒<font class="red">【可抵扣<?php echo $userInfo['yongjin'];//$orderCart['maxconmision']; ?>元】</font></i>
+        						<div class="switch" style="margin-top: 2px;">
+        							<input type="checkbox"> <span></span>
+        						</div>
+        					    <input id="useintegral" name="useintegral" type="hidden" value="<?php echo $orderCart['maxconmision']?>" relvalue="<?php echo $orderCart['maxconmision']?>" />
+        					</div>
+        				</div>
+        			<?php else:?>
+        			<input id="useintegral" name="useintegral" type="hidden" value="<?php echo $orderCart['maxconmision']?>" relvalue="<?php echo $orderCart['maxconmision']?>" />
+    				<?php endif;?>
+				<?php endif;?>
+				<div class="bg-w  order-confim-payment">
+					<div class="item-hd">
+						<span class="col_0">配送方式</span>
+					</div>
+					<div class="item-bd">
+						<label class=""><select name='postmode' id='postmode' class='fr' style="width: 30%; margin-right: 10px;">
+                                <?php foreach($postmodeArr as $v): ?>
+                                <option value='<?php echo $v['id']; ?>'><?php echo $v['classname']; ?></option>
+                                <?php endforeach; ?>
+                            </select><span class="col_0 fs15"><?php echo empty($orderCart['yunfei'])?'免运费':'运费 <font style="color: red">'.$cfg_freight . '</font> 元'?></span><i>满<?php echo $cfg_freight_free?>包邮</i></label>
+					</div>
+				</div>
+				<div class="bg-w order-confim-message">
+					<div class="fbox item-bd">
+						<div class="fs16 col_0 tit">买家留言</div>
+						<div class="flex textarea">
+							<textarea name="" cols="" rows="" placeholder="请将信息备注在这里" name="buyremark"></textarea>
+						</div>
+					</div>
+				</div>
+				<section class="cart-submit">
+					<div class="table">
+						<div class="table-cell item-tit">
+						<?php 
+						if($typepid == 4){
+						    $totalAmount = $orderCart['totalAmount']+$orderCart['yunfei']-$orderCart['minYongjin'];
+						}elseif($typepid == 20){
+						    $totalAmount = $orderCart['totalAmount']+$orderCart['yunfei']-$orderCart['minJifen'];
+						}else{
+						    $totalAmount = $orderCart['totalAmount']+$orderCart['yunfei']-$orderCart['maxconmision'];
+						}
+						?>
+							<span class="fs16 totalAmount">合计：<?php echo getTotalUnits2($typepid, $totalAmount); ?></span>
+						</div>
+						<div class="table-cell  item-btn">
+						    <input type="hidden" name='checkoutSub' value="1"/>
+						    <input type="hidden" id="typepid" name='typepid' value="<?php echo $typepid;?>"/>
+						    <input type="hidden" name='checkoutactivity' value="<?php echo empty($checkoutactivity)?0:$checkoutactivity?>"/>
+						    <input type="hidden" name='id' value="<?php echo empty($id)?0:$id?>"/>
+						    <input type="hidden" name='buynum' value="<?php echo empty($buynum)?0:$buynum?>"/>
+						    <input type="hidden" name="aid" value="<?php echo empty($aid)?0:$aid?>" />
+						    <input type="hidden" id="minyongjin" name="minyongjin" value="<?php echo $orderCart['minYongjin']?>" />
+						    <input type="hidden" id="minjifen" name="minjifen" value="<?php echo $orderCart['minJifen']?>" />
+							<button type="submit" onclick='return cart.checkCheckout();'><?php echo isDuiHuanOrGift($typepid)?'去兑换':'去支付'?></button>
+						</div>
+					</div>
+				</section>
+				</form>
+			</section>
+		</section>
+	</section>
+        <?php require_once TMPL_DIR . 'public/footer.php'; ?>
+        <script src="<?php echo STATIC_PATH; ?>js/cart.js"></script>
+<script>
+$(document).ready(function(){
+    $("input[name='isTax']").on('click', function() {
+        var isTax = $(this).val();
+        if (isTax == 1) {
+            $('#taxBox').fadeIn();
+        } else {
+            $('#taxBox').fadeOut();
+            $('#taxHead').val('');
+        }
+    });
 
-<body>
-<header><a href="javascript:void(0)" class="back"></a><span class="title">订单确认</span></header>
-<section class="main">
-   <section class="order_confim">
-   		<div class="b_g plb32 b_tb table order_confim_num">
-			<div class="table-cell v-t item_numpic">
-                  <div class="br20 numpic"><img src="<?php echo STATIC_PATH ; ?>/new_html/images/face2.jpg"></div>
-            </div>
-            <div class="table-cell v-t item_con">
-            	<p class="fs28 col_0 t1">活动认购总数量<i class="fs36 col_ff"> 10000 </i>颗</p>
-                <p class="col_80 t2"><span>已认购：<i class="fs30 col_ff"> 5000 </i>颗</span><span>剩余：<i class="fs30 col_ff"> 5000 </i>颗</span></p>
-            </div>
-        </div>
-        <div class="b_g b_tb table order_confim_queren">
-        	<ul>
-            	<li class="table">
-                	认购商品<div class="table-cell text-right order_confim_name">树苗</div>
-                </li>
-                <li class="table">
-                	认购数量
-                    <div class="table-cell text-right order_confim_shuliang">
-                    	<div class="buy_box">
-                        	<i class="minus"></i>
-                            <input type="text" value="1" class=" br40 value"/>
-                            <i class="plus"></i>
-                        </div>
-                    </div>
-                </li>
-                <li class="table">
-                	认购编码<div class="table-cell text-right order_confim_bianma">3847328479</div>
-                </li>
-                 <li class="table">
-                	认购年限
-                    <div class="table-cell text-right order_confim_year">
-                    	<select class="select">
-                        	<option>1年</option>
-                            <option>1年</option>
-                            <option>1年</option>
-                        </select>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="b_g plb32 b_tb order_confim_dikou">
-        	<span class="col_0 fs32">种子抵扣</span>
-            <i>可使用3200种子抵32元</i>
-            <div class="switch">
-            	<input type="checkbox">
-            	<span></span>
-            </div>
-        </div>
-        <div class="plb32 order_confim_btn">
-        	 <div class="submit"><a href="index.php?c=activity&a=message&id=<?php echo $param['id'];?>"> <button type="button" class="br5 b_g col_a2 b_d combtn ">留    言</button> </a> </div>
-            <a href="index.php?c=children"> <div class="submit"><button type="button" class="br5 b_91 col_f combtn ">帮助儿童介绍详情</button></div></a>
-             <div class="submit"><button type="button" class="br5 b_a2 col_f combtn ">我要捐赠</button></div>
-        </div>
-        <section class="article aixin">
-            <div class="br20 b_d inner_active_intro">
-                <div class="fs36 col_78 contit">上海爱心认购活动介绍</div>
-                <div class="p30 fs28 info">
-                    <p>2010年6月1日“关注孤儿，呼唤爱——中国品牌童装爱心之旅”更名为“关注儿童，呼唤爱”。“关注儿童，呼唤爱”是由中国品牌童装网主办，中国品牌服装网和时尚126商城承办，于2007年11月1日起开展的，一次大规模、大范围、众多品牌企业联手参与，以改善全国57.3万贫困儿童的生活和学习条件，让贫困儿童健康快乐成长的大型慈善爱心活动。</p>
-                </div>
-            </div>
-   		</section>
-        <section class="cart_submit">
-            <div class="table">
-              <div class="table-cell item_tit"><span class="fs32">合计：¥198.0</span> </div>
-              <div class="table-cell  item_btn">
-                <button type="button">去支付</button>
-              </div>
-            </div>
-  		</section>
-   </section>
-</section>
+    $('#postmode').on('change',function(){
+        var postmodeId = $(this).val();
+        cart.orderChange(postmodeId);
+    });
 
+    $(".switch span").click(function(){
+    	if(!$(this).parent().hasClass("active")){
+ 		    $(this).parent().addClass("active");
+    	    $("#useintegral").val('0');
+    	    $(".totalAmount").text('合计：¥'+(<?php echo $orderCart['totalAmount']+$orderCart['yunfei']; ?>));
+    	}else{
+    		$(this).parent().removeClass("active");
+ 		    $("#useintegral").val($("#useintegral").attr('relvalue'));
+  		    $(".totalAmount").text('合计：¥'+(<?php echo $orderCart['totalAmount']+$orderCart['yunfei']-$orderCart['maxconmision']; ?>));
+    	}
+    })	
+});
+</script>
 </body>
 </html>

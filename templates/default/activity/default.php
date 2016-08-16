@@ -1,6 +1,6 @@
 <?php require_once TMPL_DIR . 'public/new_header.php'; ?>
 <body>
-<header><a href="javascript:window.history.back()" class="back"></a><span class="title">种子活动</span></header>
+<?php require_once TMPL_DIR . 'public/new_header_back.php'; ?>
 <section class="main">
 	<section class="active_box">
     	<div class="flexslider banner">

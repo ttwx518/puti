@@ -199,6 +199,15 @@ IsModelPriv('infolist');
                             <span class="cnote">活动必填</span>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td height="40" align="right">库存：</td>
+                        <td>
+                            <input type="text" name="housenum" id="housenum" class="input" />
+                            <span class="cnote">活动必填</span>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td height="40" align="right">单位：</td>
                         <td>

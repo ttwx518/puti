@@ -39,7 +39,7 @@ var cart = {
      * @param {int} num 商品数量
      * @returns {undefined}
      */
-    buyNow: function(id, num){
+    buyNow: function(id, num,type){
         if (!id){
             ShowMessage('参数错误');
             return;
@@ -53,7 +53,7 @@ var cart = {
             return;
         }
         $.ajax({
-            url: 'ajax.php?action=buyNow&id=' + id + "&num=" + num,
+            url: 'ajax.php?action=buyNow&id=' + id + "&num=" + num + "&type=" + type,
             async: false,
             type: 'post',
             dataType: 'json',

@@ -11,6 +11,7 @@
 				<?php $typepid = 0;?>
 				<?php if($cart['items']): foreach($cart['items'] as $v): ?>
 				<?php $typepid = empty($v['typepid'])?0:$v['typepid']?>
+                    <input type="hidden" name="cart_type[<?php echo $v['id']; ?>]" value="<?php echo $v['cart_type'];?>" />
 					<div class="table item on">
 						<div class="table-cell item-check">
 							<div class="check cartIds" price="<?php echo $v['salesprice']; ?>"></div>

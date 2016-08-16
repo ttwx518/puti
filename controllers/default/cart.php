@@ -18,15 +18,17 @@ $cart = $docart->getCart($cookieCart);
 if(isset($cartSub)){
     $items = isset($items) ? $items : array();
     $buynums = isset($buynums) ? $buynums : array();
+    $cart_type =  isset($cart_type) ? $cart_type : array();
     if(!$items || !$buynums){
         ShowMsg('请选择您需要结算的商品!');
     }
+
     $orderCart = array();
     foreach($items as $k => $v){
         if(empty($v)){
             unset($cookieCart[$k]);
         }else {
-            $orderCart[$k] = $buynums[$k];
+            $orderCart[$k] = array('num' => $buynums[$k], 'cart_type' =>$cart_type[$k] );
         }
     }
     setcookie('cart', AuthCode(serialize($cookieCart), 'ENCODE'));

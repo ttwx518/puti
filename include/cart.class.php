@@ -26,22 +26,25 @@ class cart {
      * @param int $num 商品数量
      * @return int $totalNum 购物车商品总数
      */
-    public function addCart($gid, $num) {
+    public function addCart($gid, $num,$type = '-1') {
         global $dosql;
         $addgoods = $dosql->GetOne("SELECT id,typepid FROM #@__goods WHERE id={$gid}");
         $cart = $this->getCookieCart();
         if (!$cart) {
-            $cart = array($gid => $num);
+          //  $cart = array($gid => $num);
+            $cart = array($gid => array('num' => $num, 'type' => $type )); //$type 普通商品 -1  爱心购 1  认养 2 认购 3
         } else {
             if (array_key_exists($gid, $cart)) {
-                $cart[$gid] += $num;
+              //  $cart[$gid] += $num;
+                $cart[$gid]['num'] += $num;
             } else {
-                $cart[$gid] = $num;
+                $cart[$gid]['num'] = $num;
             }
         }
         $totalNum = 0;
         foreach ($cart as $k=>$v) {
-            $totalNum += $v;
+            // $totalNum += $v;
+            $totalNum += $v['num'];
             $goods = $dosql->GetOne("SELECT id,typepid FROM #@__goods WHERE id={$k}");
             if(isDuiHuanOrGift($addgoods['typepid']) && $goods['typepid'] != $addgoods['typepid']){ //4 或 20
                 unset($cart[$k]);
@@ -49,6 +52,7 @@ class cart {
                 unset($cart[$k]);
             }
         }
+
         setcookie('cart', AuthCode(serialize($cart), 'ENCODE'));
         return $totalNum;
     }
@@ -59,13 +63,14 @@ class cart {
      * @param int $num 商品数量
      * @return int $totalNum 购物车商品总数
      */
-    public function buyNow($gid, $num) {
+    public function buyNow($gid, $num,$type = '-1') {
         global $dosql;
         $addgoods = $dosql->GetOne("SELECT id,typepid FROM #@__goods WHERE id={$gid}");
         $totalNum = 0;
         $cart = $this->getCookieCart();
         foreach ($cart as $k=>$v) {
-            $totalNum += $v;
+          //  $totalNum += $v;
+            $totalNum += $v['num'];
             $goods = $dosql->GetOne("SELECT id,typepid FROM #@__goods WHERE id={$k}");
             if(isDuiHuanOrGift($addgoods['typepid']) && $goods['typepid'] != $addgoods['typepid']){ //4 或 20
                 unset($cart[$k]);
@@ -77,7 +82,9 @@ class cart {
         if ($num == 0) {
             unset($cart[$gid]);
         }else{
-            $cart[$gid] = $num;
+           // $cart[$gid] = $num;
+            $cart[$gid]['num'] = $num;
+            $cart[$gid]['type'] = $type;
         }
         setcookie('cart', AuthCode(serialize($cart), 'ENCODE'));
         
@@ -96,7 +103,8 @@ class cart {
         if ($num == 0) {
             unset($cart[$gid]);
         }else{
-            $cart[$gid] = $num;
+           // $cart[$gid] = $num;
+            $cart[$gid]['num'] = $num;
         }
         setcookie('cart', AuthCode(serialize($cart), 'ENCODE'));
         return $this->getCart($cart);
@@ -119,9 +127,10 @@ class cart {
     public function getCart($cart) {
         global $dosql,$cfg_freight_free,$cfg_freight,$userInfo;
         $returnArr = array('items' => array(), 'totalNum' => 0, 'totalAmount' => 0, 'totalWeight' => 0, 'totalFreight' => 0,'minYongjin'=>0,'minJifen'=>0);
+
         if (!empty($cart)) {
             $cart_goodIds = implode(',', array_keys($cart));
-            $dosql->Execute("SELECT typepid,typeid,id,picurl,title,goodsid,flag,salesprice,salesprice_dashi,salesprice_tianshi,payfreight,freight,weight,directCommission,indirectCommission,description FROM `#@__goods` WHERE id IN ({$cart_goodIds}) AND checkinfo='true' AND delstate=''");
+            $dosql->Execute("SELECT typepid,typeid,id,picurl,title,goodsid,flag,salesprice,salesprice_dashi,salesprice_tianshi,payfreight,freight,weight,directCommission,indirectCommission,description,housenum,salenum FROM `#@__goods` WHERE id IN ({$cart_goodIds}) AND checkinfo='true' AND delstate=''");
             while ($row = $dosql->GetArray()) {
                 $price = calcPrice($row);
                 if(!empty($price)){
@@ -129,7 +138,9 @@ class cart {
                 }
                 $row['flag'] = explode(',', $row['flag']);
                 $row['indirectCommission'] = unserialize($row['indirectCommission']);
-                $buyNum = $cart[$row['id']];
+                $row['cart_type'] =  $cart[$row['id']]['type'];
+               // $buyNum = $cart[$row['id']];
+                $buyNum = $cart[$row['id']]['num'];
                 $returnArr['items'][$row['id']] = $row;
                 $returnArr['items'][$row['id']]['buyNum'] = $buyNum;
                 $returnArr['totalNum'] += $buyNum;

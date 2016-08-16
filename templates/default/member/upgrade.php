@@ -63,14 +63,22 @@
             alert('请选择');
             return false;
         }
-        $.post("index.php?c=member&a=upgrade&type=upgrade",{seed : seed}, function(ret){
-            if(ret.status){
-                alert('升级成功');
-            } else{
-                alert(ret.msg);
-            }
 
-        });
+        if(confirm('确认升级吗？')){
+
+            $.post("index.php?c=member&a=upgrade&type=upgrade",{seed : seed}, function(ret){
+                ret = eval('('+ret+')');
+                if(ret.status){
+                    alert('升级成功');
+                    window.location.reload();
+                } else{
+                    alert(ret.msg);
+                }
+
+            });
+
+        }
+
 
     });
 </script>

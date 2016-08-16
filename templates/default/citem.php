@@ -72,7 +72,7 @@
 					<p class="fs14 col_3"><?php echo $goods['title']?></p>
 					<div class="mt10">
 						<span class="fs15 mr10">¥ <?php echo $goods['salesprice']?></span><!-- <s class="col_9"> ¥68.0</s> -->
-						<a href="javascript:cart.buyNow(<?php echo $goods['id']; ?>, 1);" class="fr br5">立刻购买</a>
+						<a href="javascript:cart.buyNow(<?php echo $goods['id']; ?>, 1,1);" class="fr br5">立刻购买</a>
 					</div>
 				</dd>
 			</dl>

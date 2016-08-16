@@ -4,35 +4,31 @@ if(empty($userInfo)){
     redirectAuth($url);
 }
 /************************种子认养***************************/
-if (!empty($checkoutactivity)) {
-    global $dosql,$cfg_freight_free,$cfg_freight,$userInfo;
-    $orderCart  = array('items' => array(), 'totalNum' => 0, 'totalAmount' => 0, 'totalWeight' => 0, 'totalFreight' => 0,'minYongjin'=>0,'minJifen'=>0);
-    
-    $row = $dosql->GetOne("select * from #@__infolist where id={$id}");
-    $row['salesprice'] = $row['goodsprice'];
-    $orderCart['items'][$row['id']] = $row;
-    $orderCart['items'][$row['id']]['buyNum'] = $buynum;
-    $orderCart['totalNum'] = $buynum;
-    $orderCart['totalAmount'] = $row['salesprice'] * $buynum;
-    if($orderCart['totalAmount']>=$cfg_freight_free){
-        $orderCart['yunfei'] = 0;// '免运费';
-    }else{
-        $orderCart['yunfei'] = $cfg_freight;//'运费 <font style="color: red">'.$cfg_freight . '</font> 元';
-    }
-    $orderCart['maxconmision'] = 0; //认养不能抵扣 //min($userInfo['yongjin'], ($orderCart['totalAmount']+$orderCart['yunfei']));
+
+global $dosql,$cfg_freight_free,$cfg_freight,$userInfo;
+$orderCart  = array('items' => array(), 'totalNum' => 0, 'totalAmount' => 0, 'totalWeight' => 0, 'totalFreight' => 0,'minYongjin'=>0,'minJifen'=>0);
+$row = $dosql->GetOne("select * from #@__infolist where id={$id}");
+$row['salesprice'] = $row['goodsprice'];
+$orderCart['items'][$row['id']] = $row;
+$orderCart['items'][$row['id']]['buyNum'] = $buynum;
+$orderCart['shop_title'] = $row['title'];
+
+if($row['classid'] == 5){
+    $orderCart['items'][$row['id']]['order_type']  = 2; //认养
+} elseif($row['classid'] == 6) {
+    $orderCart['items'][$row['id']]['order_type']  = 3; //认购
 }
-/************************种子认养***************************/
-else{
-/************************正常购买***************************/
-    //获取订单结算购物车信息
-    $cookieCart = unserialize(getCookie('cart'));
-    $orderCart = $docart->getCart($cookieCart);
-    //判断购物车是否为空
-    if (!$orderCart['items']) {
-        redirect('index.php?c=cart');
-    }
-/************************正常购买***************************/
+
+$orderCart['totalNum'] = $buynum;
+$orderCart['totalAmount'] = $row['salesprice'] * $buynum;
+if($orderCart['totalAmount']>=$cfg_freight_free){
+    $orderCart['yunfei'] = 0;// '免运费';
+}else{
+    $orderCart['yunfei'] = $cfg_freight;
 }
+
+$orderCart['maxconmision'] = 0;
+
 $areas = listarea(-1);
 
 //订单提交错误信息

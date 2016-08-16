@@ -1,0 +1,1 @@
+<header><a href="javascript:history.back();" class="back"></a><span class="title"><?php echo $seo['title'];?></span></header>
