@@ -97,6 +97,14 @@ class order {
 
             }
             $userInfo = $dosql->GetOne("SELECT * FROM #@__member WHERE id={$orderInfo['uid']}");
+            //更新活动库存
+            if($orderInfo['aid'] > 0 ){
+                $dosql->Execute("select * from `#@__goodsorderitem` where orderid = '{$orderInfo['id']}' ");
+                while($rrow = $dosql->GetArray()){
+                    $dosql->ExecNoneQuery("update `#@__infolist` set housenum = housenum- '{$rrow['buyNum']}',salenum = salenum + '{$rrow['buyNum']}' where id = '{$rrow['gid']}' ");
+                }
+            }
+
             //如果用户未确认上家则更新
             if(!$userInfo['isReced']){
                 $dosql->ExecNoneQuery("UPDATE `#@__member` SET isReced=1 WHERE id={$userInfo['id']}");

@@ -138,13 +138,16 @@ class cart {
                 }
                 $row['flag'] = explode(',', $row['flag']);
                 $row['indirectCommission'] = unserialize($row['indirectCommission']);
-                $row['cart_type'] =  $cart[$row['id']]['type'];
+
                // $buyNum = $cart[$row['id']];
                 $buyNum = $cart[$row['id']]['num'];
                 $returnArr['items'][$row['id']] = $row;
+                $returnArr['items'][$row['id']]['cart_type'] = $cart[$row['id']]['type'];
                 $returnArr['items'][$row['id']]['buyNum'] = $buyNum;
                 $returnArr['totalNum'] += $buyNum;
                 $returnArr['totalAmount'] += ($row['salesprice'] * $buyNum);
+                $returnArr['order_type'] =  $cart[$row['id']]['type'];
+
                 // 运费计算
                 if($returnArr['totalAmount'] >= $cfg_freight_free){
                     $returnArr['yunfei'] = 0;//'免运费';
@@ -153,6 +156,7 @@ class cart {
                 }
                 // 计算使用的种子数量
                 $returnArr['maxconmision'] = min($userInfo['yongjin'], ($returnArr['totalAmount']+$returnArr['yunfei']));
+
                 // 判断积分商城的商品, 需要单独计算, 需要足够的积分才能购买
                 if($row['typepid']==4){
                     $returnArr['minYongjin'] += ($row['salesprice'] * $buyNum);

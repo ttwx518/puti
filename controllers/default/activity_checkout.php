@@ -3,186 +3,95 @@ $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 if(empty($userInfo)){
     redirectAuth($url);
 }
-/************************种子认养***************************/
+$action = isset($action) ? $action : 'checkout';
 
-global $dosql,$cfg_freight_free,$cfg_freight,$userInfo;
-$orderCart  = array('items' => array(), 'totalNum' => 0, 'totalAmount' => 0, 'totalWeight' => 0, 'totalFreight' => 0,'minYongjin'=>0,'minJifen'=>0);
-$row = $dosql->GetOne("select * from #@__infolist where id={$id}");
-$row['salesprice'] = $row['goodsprice'];
-$orderCart['items'][$row['id']] = $row;
-$orderCart['items'][$row['id']]['buyNum'] = $buynum;
-$orderCart['shop_title'] = $row['title'];
+if($action == 'checkout') {
 
-if($row['classid'] == 5){
-    $orderCart['items'][$row['id']]['order_type']  = 2; //认养
-} elseif($row['classid'] == 6) {
-    $orderCart['items'][$row['id']]['order_type']  = 3; //认购
+    $id  = isset($id) ? $id : 0;
+    $buynum = isset($buynum) ? $buynum : 1;
+    $activity_info = $dosql->GetOne("select * from `#@__infolist` where id = '$id'");
+    if($activity_info['classid'] == 5) {
+        $activity_info['order_type'] = 2; //认养
+    } elseif($activity_info['classid'] == 8) {
+        $activity_info['order_type'] = 3; //认购
+    }
+    $activity_info['total_num'] = $buynum;
+    $activity_info['totalAmount'] = $activity_info['goodsprice'] * $buynum;
+    if($activity_info['totalAmount'] >= $cfg_freight_free){
+        $activity_info['yunfei'] = 0;
+    } else {
+        $activity_info['yunfei'] = $cfg_freight;
+    }
+    $activity_info['buy_code'] = rand(1,9).date("md",time()).rand(time(),-5);
+
 }
-
-$orderCart['totalNum'] = $buynum;
-$orderCart['totalAmount'] = $row['salesprice'] * $buynum;
-if($orderCart['totalAmount']>=$cfg_freight_free){
-    $orderCart['yunfei'] = 0;// '免运费';
-}else{
-    $orderCart['yunfei'] = $cfg_freight;
-}
-
-$orderCart['maxconmision'] = 0;
-
-$areas = listarea(-1);
-
-//订单提交错误信息
-$error = ''; 
-
-//订单提交
-if (!empty($checkoutSub)) {
-    //收货地址
-    $addressId = isset($addressId) ? intval($addressId) : 0;
-    if(!$addressId){
-        $error = '收货地址不能为空';
+//结算
+elseif($action == 'check_order') {
+    $param = $_POST;
+    $nowTime = time();
+    //订单号
+    $ordernum = MyDate('YmdHis', $nowTime) . mt_rand(10000, 99999);
+    //订单状态
+    $checkinfo[] = 'confirm';
+    $useintegral = isset($param['useintegral']) ? $param['useintegral'] : 0;
+    // 活动发起者ID
+    $aid=empty($param['aid'])?0:intval($param['aid']);
+    // 查找活动
+    $infolist = $dosql->GetOne("SELECT * FROM `#@__infolist` WHERE id={$aid}");
+    $goods_amount = round($infolist['goodsprice'] * $param['totalNum'],2);
+    $checkinfoStr = implode(',', $checkinfo);
+    if($goods_amount + $param['yunfei'] > $useintegral){
+        $amount = $goods_amount + $param['yunfei'] - $useintegral;
+    } else {
+        $amount = 0;
+        $useintegral = $goods_amount + $param['yunfei'];
     }
-    $addressInfo = $dosql->GetOne("SELECT * FROM #@__useraddress WHERE id={$addressId} AND uid={$userInfo['id']}");
-    if(!$error && !$addressInfo){
-        $error = '收货地址信息错误';
+
+    $order_type = -1;
+    if($infolist['classid'] == 5){
+        $order_type = 2; //认养
+    } elseif($infolist['classid'] == 8) {
+        $order_type = 3; //认养
     }
-    //支付方式
-    $paymode = isset($paymode) ? intval($paymode) : 0;
-    if (!$error && !$paymode) {
-        $error = '请选择支付方式';
-    }
-    $postmode = isset($postmode) ? intval($postmode) : 0;
-    if (!$error && !$postmode) {
-        $error = '请选择配送方式';
-    }
-    $postmodeInfo = $dosql->GetOne("SELECT * FROM `#@__postmode` WHERE checkinfo='true' AND id={$postmode}");
-    if(!$error && !$postmodeInfo){
-        $error = '配送方式信息错误';
-    }
-    //发票信息
-//     $isTax = isset($isTax) ? intval($isTax) : 0;
-//     $taxHead = isset($taxHead) ? trim($taxHead) : '';
-//     if(!$error && $isTax == 1 && !$taxHead){
-//         $error = '请填写发票抬头';
-//     }
-    $isTax=0;
-    $taxHead='';
-    //买家留言
-    $buyremark = isset($buyremark) ? trim($buyremark) : '';
-    
-    if(!$error){
-        $provInfo = isset($areas[$addressInfo['prov']]['dataname']) ? $areas[$addressInfo['prov']]['dataname'] : '';
-        $cityInfo = isset($areas[$addressInfo['city']]['dataname']) ? $areas[$addressInfo['city']]['dataname'] : '';
-        $countryInfo = isset($areas[$addressInfo['country']]['dataname']) ? $areas[$addressInfo['country']]['dataname'] : '';
-        $pccinfo =  $provInfo.$cityInfo.$countryInfo;
-        $nowTime = time();
-        //订单号
-        $ordernum = MyDate('YmdHis', $nowTime) . mt_rand(10000, 99999);
-        //订单状态
-        $checkinfo[] = 'confirm';
-        // 活动发起者ID
-        $aid=empty($aid)?0:intval($aid);
-        // 查找活动
-        $infolist = $dosql->GetOne("SELECT * FROM `#@__infolist` WHERE id={$aid}");
-        $suid = empty($infolist['auid'])?0:$infolist['auid'];
-        
-        $checkinfoStr = implode(',', $checkinfo);
-        $amount = $orderCart['totalAmount'] + $orderCart['yunfei']-$useintegral;
-        $orderSql = "INSERT INTO `#@__goodsorder`
-                    (uid, recUid, recUid2, ordernum, addressId, name, mobile, prov, city, country, pccinfo, address, zipcode, 
-                     paymode, postmode, isTax, taxHead, buyremark, weight, cost, goodsAmount, amount, checkinfo, 
-                     createtime, updatetime, useintegral,auid,aid)
+
+    $orderSql = "INSERT INTO `#@__goodsorder`
+                    (uid, recUid, recUid2, ordernum, `name`, mobile, address,
+                     paymode, cost, goodsAmount, amount, goodsNames, checkinfo,createtime, updatetime, useintegral,auid,aid,order_type,buy_year,buy_code)
                     VALUES
-                    ('{$userInfo['id']}', '{$userInfo['recUid']}', '{$userInfo['recUid2']}', '{$ordernum}', '{$addressInfo['id']}', '{$addressInfo['name']}', 
-                     '{$addressInfo['mobile']}', '{$addressInfo['prov']}', '{$addressInfo['city']}', 
-                     '{$addressInfo['country']}', '{$pccinfo}', '{$addressInfo['address']}', 
-                     '{$addressInfo['zipcode']}', '{$paymode}', '{$postmode}', '{$isTax}', '{$taxHead}', 
-                     '{$buyremark}', '{$orderCart['totalWeight']}', '{$orderCart['totalFreight']}', 
-                     '{$orderCart['totalAmount']}', '{$amount}', '{$checkinfoStr}', '{$nowTime}', '{$nowTime}', '$useintegral',{$suid},$aid)";
+                    ('{$userInfo['id']}', '{$userInfo['recUid']}', '{$userInfo['recUid2']}', '{$ordernum}',  '{$param['name']}',
+                     '{$param['mobile']}', '{$param['address']}','{$param['paymode']}',  '{$param['yunfei']}',
+                     '$goods_amount', '{$amount}','{$infolist['title']}', '{$checkinfoStr}', '{$nowTime}', '{$nowTime}', '$useintegral',{$infolist['auid']},$aid,'$order_type',
+                     '{$param['buy_year']}','{$param['buy_code']}')";
 
-        $orderInsertResult = $dosql->ExecNoneQuery($orderSql);
-        
-        if ($orderInsertResult) {
-            //订单提交成功
-             $insertId = $dosql->GetLastID();
-            //处理商品信息
-            $cart = $docart->getCookieCart();
-            $totalDirectCommission = $totalIndirectCommission = 0;
-            $goodsNames = array();
-            if(is_array($orderCart['items']) && count($orderCart['items']) > 0){
-                foreach($orderCart['items'] as $v){
-                    $goodsNames[] = $v['title'];
-                    if(array_key_exists($v['id'], $cart)){
-                        unset($cart[$v['id']]);
-                    }
-                    $dosql->ExecNoneQuery("INSERT INTO `#@__goodsorderitem` 
-                                          (orderid, gid, picurl, title, goodsid, salesprice, directCommission, 
-                                          indirectCommission, buyNum) VALUES ('{$insertId}', '{$v['id']}', 
-                                          '{$v['picurl']}', '{$v['title']}', '{$v['goodsid']}', 
-                                          '{$v['salesprice']}', '0', '0', '{$v['buyNum']}')");
-                }
-            }
-            $goodsNames = implode(',', $goodsNames);
-            //更新订单货主奖励佣金与订单平台奖励佣金
-            $dosql->ExecNoneQuery("UPDATE `#@__goodsorder` SET directCommission={$totalDirectCommission},indirectCommission={$totalIndirectCommission},goodsNames='{$goodsNames}' WHERE id={$insertId}");
-            
-            //删除购物车
-            delCookie('orderCart');
-            setcookie('cart', AuthCode(serialize($cart), 'ENCODE'));
-            //跳转支付
-            if($typepid == 4 && $userInfo['yongjin'] >= $useintegral) {// 种子兑换
-                $tmp = 'confirm,payment';
-                $sql = "UPDATE `#@__goodsorder` SET checkinfo='$tmp' WHERE `ordernum`='{$ordernum}'";
-                $dosql->ExecNoneQuery($sql);
-                $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin - {$useintegral} where id={$userInfo['id']}");
-                operate_commision($userInfo['id'], $useintegral, '-', '种子兑换', $ordernum, $userInfo['id'],'您在种子商城已兑换成功。',2);
-                redirect('index.php?c=member&a=order&flag=postgoods');
-            }elseif ($typepid == 20 && $userInfo['jifen'] >= $useintegral){// 积分兑换
-                $tmp = 'confirm,payment';
-                $sql = "UPDATE `#@__goodsorder` SET checkinfo='$tmp' WHERE `ordernum`='{$ordernum}'";
-                $dosql->ExecNoneQuery($sql);
-                $dosql->ExecNoneQuery("UPDATE `#@__member` SET jifen=jifen - {$useintegral} where id={$userInfo['id']}");
-                operate_commision($userInfo['id'], $useintegral, '-', '积分兑换', $ordernum, $userInfo['id'],'您在活动积分商城已兑换成功。',2);
-                redirect('index.php?c=member&a=order&flag=postgoods');
-            }elseif ($paymode==1 && $amount==0){// 正常购买 全额抵扣
-                $tmp = 'confirm,payment';
-                $sql = "UPDATE `#@__goodsorder` SET checkinfo='$tmp' WHERE `ordernum`='{$ordernum}'";
-                $dosql->ExecNoneQuery($sql);
-                $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin - {$useintegral} where id={$userInfo['id']}");
-                operate_commision($userInfo['id'], $useintegral, '-', '种子抵现', $ordernum, $userInfo['id'],'您在种子商城认购已支付成功。',2);
-                redirect('index.php?c=member&a=order&flag=postgoods');
-            }elseif($paymode==1 && $amount > 0){// 正常购买 微信支付
-                redirect('topay/wechatpay/js_api_call.php?ordernum='.$ordernum);
-            }else{
-                echo '参数错误!';
-            }
-//             if(($paymode==2 && $minyongjin <= $useintegral) || ($paymode==1 && $userInfo['yongjin'] >= $useintegral)){
-//                 $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin - {$useintegral} where id={$userInfo['id']}");
-//                 $tmp = 'confirm,payment';
-//                 $sql = "UPDATE `#@__goodsorder` SET checkinfo='$tmp' WHERE `ordernum`='{$ordernum}'";
-//                 $dosql->ExecNoneQuery($sql);
-//                 // 积分商城
-//                 if($paymode==2){
-//                     operate_commision($userInfo['id'], 0, '+', '', $ordernum, $userInfo['id'],'您在积分商城兑换商品已成功。',1);
-//                 }elseif ($paymode==1){
-//                     operate_commision($userInfo['id'], 0, '+', '', $ordernum, $userInfo['id'],'您在种子商城认养的种子已支付成功。',1);
-//                 }
-//                 redirect('index.php?c=member&a=order&flag=postgoods');
-//             }elseif($paymode==1 && $amount>0){
-//                 redirect('topay/wechatpay/js_api_call.php?ordernum='.$ordernum);
-//             }else{
-//                 echo '参数错误!';
-//             }
-        }else{
-            $error = '系统繁忙,请稍后重试!';
+    $orderInsertResult = $dosql->ExecNoneQuery($orderSql);
+    if($orderInsertResult){
+        //订单提交成功
+        $insertId = $dosql->GetLastID();
+        $dosql->ExecNoneQuery("INSERT INTO `#@__goodsorderitem`
+                                          (orderid, gid, picurl, title, salesprice, directCommission,
+                                          indirectCommission, buyNum) VALUES ('{$insertId}', '{$aid}',
+                                          '{$infolist['picurl']}', '{$infolist['title']}',
+                                          '{$infolist['goodsprice']}', '0', '0', '{$param['totalNum']}')");
+
+        if($amount > 0){
+            redirect('topay/wechatpay/js_api_call.php?ordernum='.$ordernum);
+            exit;
+        } else {
+            $checkinfo[] = 'payment'; //抵扣支付
+            $checkinfoStr = implode(',',$checkinfo);
+            $dosql->ExecNoneQuery("update `#@__goodsorder` set checkinfo = '$checkinfoStr' where id = '$insertId' ");
+            redirect('index.php?c=member&a=paySuccess&ordernum='.$ordernum);
+            exit;
         }
+
+
+
     }
+
+
 }
 
-//获取默认收货地址
-$address = $dosql->GetOne("SELECT * FROM #@__useraddress WHERE uid={$userInfo['id']} ORDER BY isDefault DESC,id DESC");
 
-//获取配送方式
-$postmodeArr = getPostmode();
 
 $seo = setSeo('订单结算', $cfg_keyword, $cfg_description);
 

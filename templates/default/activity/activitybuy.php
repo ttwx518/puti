@@ -102,8 +102,6 @@
             <?php } else {?>
               <button class="br5 combtn">认    购</button>
             <?php } ?>
-            <input type="hidden" name="checkoutactivity" value="1" />
-            <input type="hidden" name="aid" id="aid" value="" />
             <input type="hidden" name="id" value="<?php echo $id?>"/>
           </form>
         </div>

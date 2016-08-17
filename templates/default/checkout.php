@@ -8,6 +8,7 @@
 			<section class="order-confim">
 			<form action="index.php?c=checkout" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="addressId" id='addressId' value="<?php echo isset($address['id']) ? $address['id'] : 0; ?>" />
+				<input type="hidden" name="order_type" value="<?php echo $orderCart['order_type'];?>" />
 				<div class="arrow-icon hasdot bg-f order-confim-address">
 				<?php if(!empty($address) && is_array($address)): ?>
 				<?php $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];?>

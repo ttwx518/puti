@@ -31,10 +31,11 @@ else{
     if (!$orderCart['items']) {
         redirect('index.php?c=cart');
     }
+
 /************************正常购买***************************/
 }
 $areas = listarea(-1);
-
+$orderCart['order_type'] = isset($orderCart['order_type']) ? $orderCart['order_type'] : '-1';
 //订单提交错误信息
 $error = ''; 
 
@@ -88,26 +89,35 @@ if (!empty($checkoutSub)) {
         // 查找活动
         $infolist = $dosql->GetOne("SELECT * FROM `#@__infolist` WHERE id={$aid}");
         $suid = empty($infolist['auid'])?0:$infolist['auid'];
-        
+        if($order_type == 1){
+            $useintegral = ($orderCart['totalAmount'] + $orderCart['yunfei'])*0.9; //爱心 抵扣9 折
+        }
+
         $checkinfoStr = implode(',', $checkinfo);
-        $amount = $orderCart['totalAmount'] + $orderCart['yunfei']-$useintegral;
+        if($userInfo['yongjin'] >= $amount){
+            $amount = 0;
+        } else {
+            $amount = $orderCart['totalAmount'] + $orderCart['yunfei']-$useintegral;
+        }
+
+
         $orderSql = "INSERT INTO `#@__goodsorder`
                     (uid, recUid, recUid2, ordernum, addressId, name, mobile, prov, city, country, pccinfo, address, zipcode, 
                      paymode, postmode, isTax, taxHead, buyremark, weight, cost, goodsAmount, amount, checkinfo, 
-                     createtime, updatetime, useintegral,auid,aid)
+                     createtime, updatetime, useintegral,auid,aid,order_type)
                     VALUES
                     ('{$userInfo['id']}', '{$userInfo['recUid']}', '{$userInfo['recUid2']}', '{$ordernum}', '{$addressInfo['id']}', '{$addressInfo['name']}', 
                      '{$addressInfo['mobile']}', '{$addressInfo['prov']}', '{$addressInfo['city']}', 
                      '{$addressInfo['country']}', '{$pccinfo}', '{$addressInfo['address']}', 
                      '{$addressInfo['zipcode']}', '{$paymode}', '{$postmode}', '{$isTax}', '{$taxHead}', 
                      '{$buyremark}', '{$orderCart['totalWeight']}', '{$orderCart['totalFreight']}', 
-                     '{$orderCart['totalAmount']}', '{$amount}', '{$checkinfoStr}', '{$nowTime}', '{$nowTime}', '$useintegral',{$suid},$aid)";
+                     '{$orderCart['totalAmount']}', '{$amount}', '{$checkinfoStr}', '{$nowTime}', '{$nowTime}', '$useintegral',{$suid},$aid,'$order_type')";
 
         $orderInsertResult = $dosql->ExecNoneQuery($orderSql);
         
         if ($orderInsertResult) {
             //订单提交成功
-             $insertId = $dosql->GetLastID();
+            $insertId = $dosql->GetLastID();
             //处理商品信息
             $cart = $docart->getCookieCart();
             $totalDirectCommission = $totalIndirectCommission = 0;

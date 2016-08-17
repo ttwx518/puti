@@ -81,7 +81,8 @@ IsModelPriv('goodsorder');
                     <td height="40" align="right">订单金额： </td>
                     <td>
                         <?php echo '￥'.number_format($row['goodsAmount'], 2); ?> (商品总额) +  
-                        <?php echo '￥'.number_format($row['cost'], 2); ?> (运费) = 
+                        <?php echo '￥'.number_format($row['cost'], 2); ?> (运费) -
+                        <?php echo '￥'.number_format($row['useintegral'], 2); ?> (抵扣) =
                         <?php echo '￥'.number_format(($row['amount']), 2); ?>
                     </td>
                 </tr>

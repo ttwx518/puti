@@ -347,8 +347,8 @@ function getOrdersList($page, $flag, $uid){
             $row2['typepid'] = empty($goods['typepid'])?'':$goods['typepid'];
             $row['goodsList'][]=$row2;
         }
-        $row['postname'] = $postmode[$row['postmode']]['classname'];
-        $row['postcode'] = $postmode[$row['postmode']]['postcode'];
+        $row['postname'] = isset($postmode[$row['postmode']]['classname']) ? $postmode[$row['postmode']]['classname'] : '';
+        $row['postcode'] = isset($postmode[$row['postmode']]['postcode'])? $postmode[$row['postmode']]['postcode'] : '';
         $return['data'][] = $row;
         
         
@@ -658,7 +658,7 @@ function generate_percentage($ordernum){
     if(empty($user)){
         return false;
     }
-    
+
     /*
      * 先判断是否为活动,
      * 如果为活动,走活动的分成
@@ -678,11 +678,12 @@ function generate_percentage($ordernum){
         }
         $diff_fee = ceil($order['goodsAmount'] * intval($infolist['commission_percent']) / 100);
         $wxmsg = "种子使者【".$user['wechat_nickname']."】在“".$infolist['title']."”活动参与爱心认养，认养金额为：".$order['goodsAmount']."元，您获得由“".$cfg_webname."”赠送的".$diff_fee."粒种子作为种子活动爱心推广。";
-        $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$auser['id']}");
-        $dosql->ExecNoneQuery("UPDATE `#@__member` SET jifen=jifen + {$order['goodsAmount']} where id={$user['id']}");
+       // $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$auser['id']}");
+      //  $dosql->ExecNoneQuery("UPDATE `#@__member` SET jifen=jifen + {$order['goodsAmount']} where id={$user['id']}");
         // 活动购买者
-        operate_commision($user['id'], 0, '+', '', $order['ordernum'], $user['id'],'您在“'.$infolist['title'].'”活动认养已成功。',1);
+       // operate_commision($user['id'], 0, '+', '', $order['ordernum'], $user['id'],'您在“'.$infolist['title'].'”活动认养已成功。',1);
         // 活动发起人
+        $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee},totalyongjin=totalyongjin + {$diff_fee} where id={$auser['id']}");
         operate_commision($auser['id'], $diff_fee, '+', '活动奖励', $order['ordernum'], $user['id'],$wxmsg,1);
         return true;
     }
@@ -697,16 +698,17 @@ function generate_percentage($ordernum){
     
     
     // 购物返现
-    if(!empty($user)){
+    if(!empty($user) && $order['order_type'] == -1 &&  $order['order_type'] == 1 ){
         $diff_fee = ceil($order['goodsAmount'] * $cfg_commission_self / 100);
         $wxmsg = "您在【".$cfg_webname."】种子商城认购部分商品，认购金额为：".$order['goodsAmount']."元，您获得由“".$cfg_webname."”赠送的".$diff_fee."粒种子作为爱心种子奖励。";
-        $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$user['id']}");
+      //  $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$user['id']}");
+        $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee} where id={$user['id']}");
         operate_commision($user['id'], $diff_fee, '+', '购物奖励', $order['ordernum'], $user['id'],$wxmsg,1);
     }
     
     // 上1 直接上级
     $recUser = $dosql->GetOne("SELECT * FROM `#@__member` WHERE id={$user['recUid']}");
-    if(!empty($recUser) && !empty($user)) {
+    if(!empty($recUser) && !empty($user) && $order['order_type'] == -1) {
         $diff_fee = ceil($order['goodsAmount'] * $cfg_commission_parent / 100);
         $wxmsg = "种子使者【".$user['wechat_nickname']."】在“".$cfg_webname."”种子商城认购部分商品，认购金额为：".$order['goodsAmount']."元，您获得由“".$cfg_webname."”赠送的".$diff_fee."粒种子作为爱心种子推广奖励。";
         $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$recUser['id']}");
@@ -717,7 +719,7 @@ function generate_percentage($ordernum){
     if(!empty($recUser)){
         $recUser2 = $dosql->GetOne("SELECT * FROM `#@__member` WHERE id={$user['recUid2']}");
     }
-    if(!empty($recUser2)){
+    if(!empty($recUser2)  && $order['order_type'] == -1){
         $diff_fee = ceil($order['goodsAmount'] * $cfg_commission_gparent / 100);
         $wxmsg = "种子使者【".$user['wechat_nickname']."】在“".$cfg_webname."”种子商城认购部分商品，认购金额为：".$order['goodsAmount']."元，您获得由“".$cfg_webname."”赠送的".$diff_fee."粒种子作为爱心种子推广奖励。";
         $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$recUser2['id']}");
