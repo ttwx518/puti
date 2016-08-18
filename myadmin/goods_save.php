@@ -240,13 +240,13 @@ if ($action == 'add') {
     $sql = "INSERT INTO `$tbname` (salenum,classid, parentid, parentstr, typeid, typepid, typepstr, brandid, brandpid, 
             brandpstr, title, colorval, boldval, flag, attrstr, weight, goodsid, payfreight, freight, salesprice,salesprice_dashi,salesprice_tianshi, directCommission, 
             indirectCommission, author, linkurl, keywords, description, content, pcharacteristic, 
-            bcharacteristic, picurl, picarr, hits, orderid, posttime, starttime,endtime,ordernums,housenum,actualsales,checkinfo {$fieldname})
+            bcharacteristic, picurl, picarr, hits, orderid, posttime, starttime,endtime,ordernums,housenum,actualsales,checkinfo,seed_number {$fieldname})
             VALUES 
             ($salenum,'$classid', '$parentid', '$parentstr', '$typeid', '$typepid', '$typepstr', '$brandid', '$brandpid', 
              '$brandpstr', '$title', '$colorval', '$boldval', '$flag', '$attrstr', '$weight', '$goodsid', '$payfreight', '$freight', 
              '$salesprice','$salesprice_dashi','$salesprice_tianshi', '$directCommission', '$indirectCommission', '$author', '$linkurl', 
              '$keywords', '$description', '$content', '$pcharacteristic', '$bcharacteristic', '$picurl', 
-             '$picarr', '$hits', '$orderid', '$posttime', '$starttime','$endtime','$ordernums','$housenum','$actualsales','$checkinfo' {$fieldvalue})";
+             '$picarr', '$hits', '$orderid', '$posttime', '$starttime','$endtime','$ordernums','$housenum','$actualsales','$checkinfo','$seed_number' {$fieldvalue})";
     
     if ($dosql->ExecNoneQuery($sql)) {
         header("location:$gourl");
@@ -491,7 +491,7 @@ else if ($action == 'update') {
            salesprice_dashi='$salesprice_dashi', salesprice_tianshi='$salesprice_tianshi', directCommission='$directCommission', 
            indirectCommission='$indirectCommission', author='$author', linkurl='$linkurl', 
            keywords='$keywords', description='$description', content='$content', 
-           pcharacteristic='$pcharacteristic', bcharacteristic='$bcharacteristic', picurl='$picurl', 
+           pcharacteristic='$pcharacteristic', bcharacteristic='$bcharacteristic', picurl='$picurl',seed_number = '$seed_number',
            picarr='$picarr', hits='$hits', orderid='$orderid', posttime='$posttime', starttime='$starttime',endtime='$endtime',ordernums='$ordernums',housenum='$housenum',actualsales='$actualsales',checkinfo='$checkinfo'
            {$fieldstr} WHERE id=$id";
     if ($dosql->ExecNoneQuery($sql)) {

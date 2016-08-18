@@ -216,19 +216,25 @@ else if ($a == 'ktx') {
     $seed_money     = round($seed_widthdraw/100,2);
     $type = isset($type) ? $type : '';
     if($type == 'tixian'){
-        $seed_widthdraw = $_POST['seed_widthdraw'];
         $seed_money = $_POST['seed_money'];
-        if($seed_money < 50){
+        $withdraw_money =  $_POST['withdraw_money'];
+        if($withdraw_money < 50){
             echo "最低50元提现";exit;
         }
-        $cost = $seed_money * 0.1;
-        $amount = $seed_money - $cost;
+        if($withdraw_money > $seed_money){
+            echo "大于可提金额";exit;
+        }
+        $ordernum = MyDate('YmdHis', time()) . mt_rand(10000, 99999);
+        $openid   = $userInfo['openid'];
+        $cost = $withdraw_money * 0.1;
+        $amount = $withdraw_money - $cost;
         $time = time();
+        $seed_widthdraw = $withdraw_money * 100; //种子
         $flag = false;
-        $sql = "insert into `#@__withdraw_record` (`uid`,`truename`, `amount`, `createtime`, `createdate`, `status`, `cost`) VALUES ('{$userInfo['id']}', '{$userInfo['wechat_nickname']}',
-        '$amount','$time', '$time', '0', '$cost')";
+        $sql = "insert into `#@__withdraw_record` (`uid`,`truename`, `amount`, `createtime`, `createdate`, `status`, `cost`,`ordernum`,`openid`) VALUES ('{$userInfo['id']}', '{$userInfo['wechat_nickname']}',
+        '$amount','$time', '$time', '0', '$cost','$ordernum','$openid')";
         if( $dosql->ExecNoneQuery($sql) ) {
-           $flag =  $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin - '$seed_widthdraw', totalYongjin = totalYongjin + '$seed_widthdraw' where id = '{$userInfo['id']}'");
+           $flag =  $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin - '$seed_widthdraw' where id = '{$userInfo['id']}'");
         }
         if($flag){
             echo "提现申请成功";exit;
@@ -597,7 +603,7 @@ elseif($a == 'rechargeSuccess'){
 
     //支付成功
     if($dosql->ExecNoneQuery("update `#@__order_recharge` set status = 1 where ordernum = '{$orderInfo['ordernum']}'")){
-        $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '{$orderInfo['money']}' where id = '{$orderInfo['uid']}' ");
+        $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '{$orderInfo['money']}', totalYongjin = totalYongjin + '{$orderInfo['money']}' where id = '{$orderInfo['uid']}' ");
         //充值充值佣金的结算
         $flag = generate_seed_commission($orderInfo['uid'],$orderInfo['money'],$ordernum);
         ShowMsg('充值成功',"index.php?c=member");

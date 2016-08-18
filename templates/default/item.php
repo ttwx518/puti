@@ -28,7 +28,15 @@
 					<div class="fs18 col_y tit"><?php echo $goodInfo['title']?></div>
 					<div class="info" <?php echo $goodInfo['typepid']==17?"style='color: red'":'' ?>><?php echo str_replace("\r\n", '<br>', $goodInfo['description'])?></div>
 					<div class="col_r price">
-						<strong class="fs24"><?php echo getTotalUnits($goodInfo['typepid'], $goodInfo['salesprice']);?><?php echo $goodInfo['typepid']==17?'定金':''?></strong>
+
+						<strong class="fs24">
+							<?php if($goodInfo['typepid'] == 4 ) { ?>
+							<?php echo getTotalUnits($goodInfo['typepid'], $goodInfo['seed_number']);?>
+							<?php } else { ?>
+								<?php echo getTotalUnits($goodInfo['typepid'], $goodInfo['salesprice']);?>
+							<?php } ?>
+
+							<?php echo $goodInfo['typepid']==17?'定金':''?></strong>
 					</div>
 				</div>
 				<div class="goods-detail-tab">
@@ -84,10 +92,19 @@
 							</form>
 						</div>
 						<div class="table-cell item-cart">
-							<a href="javascript:cart.addCart(<?php echo $goodInfo['id']; ?>, 1);"><i>加入购物车</i></a>
+							<?php if($goodInfo['typepid'] == 4) { ?>
+							<a href="javascript:cart.addCart(<?php echo $goodInfo['id']; ?>, 1,4);"><i>加入购物车</i></a>
+								<?php } else { ?>
+								<a href="javascript:cart.addCart(<?php echo $goodInfo['id']; ?>, 1);"><i>加入购物车</i></a>
+							<?php } ?>
 						</div>
 						<div class="table-cell item-buy">
-							<a href="javascript:cart.buyNow(<?php echo $goodInfo['id']; ?>, 1);"><i><?php echo isDuiHuanOrGift($goodInfo['typepid'])?'立刻兑换':'立刻购买'?></i></a>
+							<?php if($goodInfo['typepid'] == 4) { ?>
+							<a href="javascript:cart.buyNow(<?php echo $goodInfo['id']; ?>, 1,4);"><i><?php echo isDuiHuanOrGift($goodInfo['typepid'])?'立刻兑换':'立刻购买'?></i></a>
+							<?php } else { ?>
+								<a href="javascript:cart.buyNow(<?php echo $goodInfo['id']; ?>, 1);"><i><?php echo isDuiHuanOrGift($goodInfo['typepid'])?'立刻兑换':'立刻购买'?></i></a>
+							<?php } ?>
+
 						</div>
 					</div>
 				</div>

@@ -130,7 +130,7 @@ class cart {
 
         if (!empty($cart)) {
             $cart_goodIds = implode(',', array_keys($cart));
-            $dosql->Execute("SELECT typepid,typeid,id,picurl,title,goodsid,flag,salesprice,salesprice_dashi,salesprice_tianshi,payfreight,freight,weight,directCommission,indirectCommission,description,housenum,salenum FROM `#@__goods` WHERE id IN ({$cart_goodIds}) AND checkinfo='true' AND delstate=''");
+            $dosql->Execute("SELECT typepid,typeid,id,picurl,title,goodsid,flag,salesprice,salesprice_dashi,salesprice_tianshi,payfreight,freight,weight,directCommission,indirectCommission,description,housenum,salenum,seed_number FROM `#@__goods` WHERE id IN ({$cart_goodIds}) AND checkinfo='true' AND delstate=''");
             while ($row = $dosql->GetArray()) {
                 $price = calcPrice($row);
                 if(!empty($price)){
@@ -142,11 +142,16 @@ class cart {
                // $buyNum = $cart[$row['id']];
                 $buyNum = $cart[$row['id']]['num'];
                 $returnArr['items'][$row['id']] = $row;
-                $returnArr['items'][$row['id']]['cart_type'] = $cart[$row['id']]['type'];
+                $returnArr['items'][$row['id']]['cart_type'] = $cart[$row['id']]['type']!='undefined' ? $cart[$row['id']]['type'] : '-1';
                 $returnArr['items'][$row['id']]['buyNum'] = $buyNum;
                 $returnArr['totalNum'] += $buyNum;
-                $returnArr['totalAmount'] += ($row['salesprice'] * $buyNum);
-                $returnArr['order_type'] =  $cart[$row['id']]['type'];
+                if($row['typepid'] == 4 ){
+                    $returnArr['totalAmount'] += ($row['seed_number'] * $buyNum);
+                }else {
+                    $returnArr['totalAmount'] += ($row['salesprice'] * $buyNum);
+                }
+
+                $returnArr['order_type'] = $cart[$row['id']]['type']!='undefined' ? $cart[$row['id']]['type'] : '-1';
 
                 // 运费计算
                 if($returnArr['totalAmount'] >= $cfg_freight_free){

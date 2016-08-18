@@ -14,7 +14,11 @@
                     <input type="hidden" name="cart_type[<?php echo $v['id']; ?>]" value="<?php echo $v['cart_type'];?>" />
 					<div class="table item on">
 						<div class="table-cell item-check">
-							<div class="check cartIds" price="<?php echo $v['salesprice']; ?>"></div>
+                            <?php if($typepid == 4) { ?>
+							<div class="check cartIds" price="<?php echo $v['seed_number']; ?>"></div>
+                                <?php } else { ?>
+                                <div class="check cartIds" price="<?php echo $v['salesprice']; ?>"></div>
+                           <?php } ?>
 							<input type="hidden" name="items[<?php echo $v['id']; ?>]" value="<?php echo $v['id']; ?>" relvalue="<?php echo $v['id']; ?>" />
 						</div>
 						<div class="table-cell item-photo">
@@ -30,7 +34,14 @@
 						<!--<div class="info"><?php //echo $v['description']; ?></div>-->
 							<div class="price">
 								<span class="br5 fr box_count buy-box"><i class="minus">-</i>
-								<input type="text" name="buynums[<?php echo $v['id']; ?>]" class="value buyNum" dataId="<?php echo $v['id']; ?>" value="<?php echo $v['buyNum'];?>"> <i class="plus">+</i></span><strong style="font-size: 14px;height: 30px;line-height: 30px;"><?php echo getTotalUnits2($v['typepid'], $v['salesprice']);?></strong>
+								<input type="text" name="buynums[<?php echo $v['id']; ?>]" class="value buyNum" dataId="<?php echo $v['id']; ?>" value="<?php echo $v['buyNum'];?>"> <i class="plus">+</i></span>
+                                <strong style="font-size: 14px;height: 30px;line-height: 30px;">
+                                    <?php if($typepid == 4) { ?>
+                                    <?php echo getTotalUnits2($v['typepid'], $v['seed_number']);?>
+                                        <?php } else { ?>
+                                        <?php echo getTotalUnits2($v['typepid'], $v['salesprice']);?>
+                                     <?php }?>
+                                </strong>
 							</div>
 							<a href="javascript:void(0);" dataId="<?php echo $v['id']; ?>" class="red delete mr20 fs16">删除</a>
 						</div>

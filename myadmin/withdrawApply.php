@@ -56,12 +56,12 @@ $statusArr = array(0=>'待审核',1=>'审核失败',2=>'审核成功');
                         <input type="checkbox" name="checkid" id="checkid" onclick="CheckAll(this.checked);">
                     </td>
                     <td width="5%">ID</td>
-                    <td width="20%">收款账号</td>
+<!--                    <td width="20%">收款账号</td>-->
                     <td width="15%">真实姓名</td>
                     <td width="15%">提现金额</td>
                     <td width="15%">申请时间</td>
                     <td width="15%">状态</td>
-                    <td width="15%" class="endCol">操作</td>
+                    <td width="35%" class="endCol">操作</td>
                 </tr>
                 <?php
                 $dopage->GetPage($sql);
@@ -72,7 +72,7 @@ $statusArr = array(0=>'待审核',1=>'审核失败',2=>'审核成功');
                             <input type="checkbox" name="checkid[]" id="checkid[]" value="<?php echo $row['id']; ?>" />
                         </td>
                         <td><?php echo $row['id']; ?></td>
-                        <td><?php echo $row['alipayAccount']; ?></td>
+<!--                        <td>--><?php //echo $row['alipayAccount']; ?><!--</td>-->
                         <td><?php echo $row['truename']; ?></td>
                         <td><?php echo $row['amount']; ?></td>
                         <td class="number"><?php echo GetDateTime($row['createtime']); ?></td>
@@ -80,6 +80,8 @@ $statusArr = array(0=>'待审核',1=>'审核失败',2=>'审核成功');
                         <td class="action endCol">
                             <span><a href="javascript:void(0);" onclick="showUserCommission(<?php echo $row['uid']; ?>);" title="点击查看佣金记录">佣金记录</a></span>
                             <?php if(!$row['status']): ?><span><a href="withdrawApply_update.php?id=<?php echo $row['id']; ?>">修改</a></span><?php endif; ?>
+                            <span><a href="withdrawApply_save.php?action=agree&id=<?php echo $row['id']; ?>">同意</a> </span>
+                            <span><a href="withdrawApply_save.php?action=refuse&id=<?php echo $row['id']; ?>">拒绝</a> </span>
                         </td>
                     </tr>
                     <?php

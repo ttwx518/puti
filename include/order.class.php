@@ -85,6 +85,7 @@ class order {
             $checkinfo[] = 'payment';
             $tmp = implode(',', $checkinfo);
             $dosql->ExecNoneQuery("UPDATE `#@__goodsorder` SET checkinfo='{$tmp}' WHERE id={$orderInfo['id']}");
+
             //更新商品销量 实际销量 库存减少
             $dosql->Execute("SELECT * FROM `#@__goodsorderitem` WHERE orderid={$orderInfo['id']}");
             while ($row = $dosql->GetArray()) {
@@ -97,13 +98,7 @@ class order {
 
             }
             $userInfo = $dosql->GetOne("SELECT * FROM #@__member WHERE id={$orderInfo['uid']}");
-            //更新活动库存
-            if($orderInfo['aid'] > 0 ){
-                $dosql->Execute("select * from `#@__goodsorderitem` where orderid = '{$orderInfo['id']}' ");
-                while($rrow = $dosql->GetArray()){
-                    $dosql->ExecNoneQuery("update `#@__infolist` set housenum = housenum- '{$rrow['buyNum']}',salenum = salenum + '{$rrow['buyNum']}' where id = '{$rrow['gid']}' ");
-                }
-            }
+
 
             //如果用户未确认上家则更新
             if(!$userInfo['isReced']){
@@ -154,6 +149,14 @@ class order {
 //                 );
 //                 $wechat->sendCustomMessage($messageData);
 //             }
+        }
+        //更新活动库存
+        if($orderInfo['aid'] > 0 ){
+            $dosql->Execute("select * from `#@__goodsorderitem` where orderid = '{$orderInfo['id']}' ");
+            while($rrow = $dosql->GetArray()){
+
+                $dosql->ExecNoneQuery("update `#@__infolist` set housenum = housenum- '{$rrow['buyNum']}',salenum = salenum + '{$rrow['buyNum']}' where id = '{$rrow['gid']}' ");
+            }
         }
     }
 }

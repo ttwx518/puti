@@ -647,7 +647,7 @@ function getUserYjList($uid, $type, $id){
  * @return boolean
  */
 function generate_percentage($ordernum){
-    global $dosql, $cfg_commission_self, $cfg_commission_parent, $cfg_commission_gparent, $cfg_webname;
+    global $dosql, $cfg_commission_self, $cfg_commission_parent, $cfg_commission_gparent, $cfg_webname,$cfg_commission_child;
     $order = $dosql->GetOne("SELECT * FROM `#@__goodsorder` WHERE ordernum='{$ordernum}'");
     if(empty($order) || $order['yongji_status'] == '1'){
         return false;
@@ -685,7 +685,7 @@ function generate_percentage($ordernum){
         // 活动发起人
         $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee},totalyongjin=totalyongjin + {$diff_fee} where id={$auser['id']}");
         operate_commision($auser['id'], $diff_fee, '+', '活动奖励', $order['ordernum'], $user['id'],$wxmsg,1);
-        return true;
+       // return true;
     }
     
     // 种子抵现
@@ -694,16 +694,26 @@ function generate_percentage($ordernum){
         $wxmsg = "您在【".$cfg_webname."】种子商城认购部分商品，认购金额为：".$order['goodsAmount']."元，使用爱心种子抵现".$diff_fee."粒种子。";
         $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin - {$diff_fee} where id={$user['id']}");
         operate_commision($user['id'], $diff_fee, '-', '种子抵扣', $order['ordernum'], $user['id'], $wxmsg,2);
+
     }
     
     
     // 购物返现
-    if(!empty($user) && $order['order_type'] == -1 &&  $order['order_type'] == 1 ){
+    if(!empty($user) && ($order['order_type'] == -1 ||  $order['order_type'] == 1) ){
         $diff_fee = ceil($order['goodsAmount'] * $cfg_commission_self / 100);
         $wxmsg = "您在【".$cfg_webname."】种子商城认购部分商品，认购金额为：".$order['goodsAmount']."元，您获得由“".$cfg_webname."”赠送的".$diff_fee."粒种子作为爱心种子奖励。";
-      //  $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$user['id']}");
-        $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee} where id={$user['id']}");
+        $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$diff_fee}, totalyongjin=totalyongjin + {$diff_fee} where id={$user['id']}");
         operate_commision($user['id'], $diff_fee, '+', '购物奖励', $order['ordernum'], $user['id'],$wxmsg,1);
+
+        if( $order['order_type'] == 1) {
+            //小孩的奖励 返利
+            $child_diff_fee =  ceil($order['goodsAmount'] * $cfg_commission_child / 100);
+            $wxmsg = "您在【".$cfg_webname."】种子商城认购部分商品，认购金额为：".$order['goodsAmount']."元，您获得由“".$cfg_webname."”赠送的".$child_diff_fee."粒种子作为爱心种子奖励(孩子的奖励）。";
+            $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$child_diff_fee}, totalyongjin=totalyongjin + {$child_diff_fee} where id={$user['id']}");
+            operate_commision($user['id'], $child_diff_fee, '+', '购物奖励', $order['ordernum'], $user['id'],$wxmsg,1);
+        }
+
+
     }
     
     // 上1 直接上级
@@ -970,15 +980,15 @@ function generate_seed_commission($uid = '', $moeny='',$ordernum=''){
     $yongjin_parent = round($cfg_recharge_parent * $moeny,2); //给上家返佣的种子
     $yongjin_p_parent = round($cfg_recharge_p_parent * $moeny,2); // 给上上家返佣的种子
 
-    if($dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin' where id = '{$memberInfo['id']}'")) {
+    if($dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin', totalYongjin = totalYongjin + '$yongjin'  where id = '{$memberInfo['id']}'")) {
         operate_commision($memberInfo['id'], $yongjin, '+', '充值返现', $ordernum, $memberInfo['id'],'充值返现',1,'recharge');
 
         //上家
-        if($memberInfo['recUid'] != 0  && $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin_parent' where id = '{$memberInfo['recUid']}'")){
+        if($memberInfo['recUid'] != 0  && $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin_parent', totalYongjin = totalYongjin + '$yongjin_parent' where id = '{$memberInfo['recUid']}'")){
             operate_commision($memberInfo['recUid'], $yongjin_parent, '+', '下线充值返现', $ordernum, $memberInfo['id'],'下线充值返现',1,'recharge');
         }
         //上上家
-        if($memberInfo['recUid2'] != 0  && $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin_p_parent' where id = '{$memberInfo['recUid2']}'")){
+        if($memberInfo['recUid2'] != 0  && $dosql->ExecNoneQuery("update `#@__member` set yongjin = yongjin + '$yongjin_p_parent', totalYongjin = totalYongjin + '$yongjin_p_parent' where id = '{$memberInfo['recUid2']}'")){
             operate_commision($memberInfo['recUid2'], $yongjin_p_parent, '+', '下线充值返现', $ordernum, $memberInfo['id'],'下线充值返现',1,'recharge');
         }
 

@@ -20,7 +20,7 @@
                       <select id="activityid" name="activityid">
                         <!-- <option value='0'>请选择您要参加的活动</option> -->
                         <?php foreach ($infolist as $k=>$v):?>
-                        <option <?php echo empty($k)?"selected='selected'":''?> value='<?php echo $v['id']?>'><?php echo $v['title']?></option>
+                        <option  value='<?php echo $v['id']?>' <?php if($v['id'] == $id) {?> selected  <?php } ?> disabled ><?php echo $v['title']?></option>
                         <?php endforeach;?>
                       </select>
                     </div>
@@ -32,7 +32,7 @@
                   <div class="table-cell item-tit">种子数量：</div>
                   <div class="table-cell item-con">
                     <input name="jine" id="jine" type="text" placeholder="请填写整数">
-                    <input name="id" id="id" type="hidden" value="">
+                    <input name="id" id="id" type="hidden" value="<?php echo $id; ?>">
                     <input name="savedonate" id="savedonate" type="hidden" value="1" />
                   </div>
                 </div>

@@ -31,7 +31,15 @@
 					<div class="table-cell item-con">
 						<div class="fs16 tit"><?php echo $v['title']; ?></div>
 						<div class="num">数量×<?php echo $v['buyNum']; ?></div>
-						<div class="fs16 col_r price"><?php $typepid = empty($v['typepid'])?0:$v['typepid']; echo getTotalUnits2($typepid, $v['salesprice']);?></div>
+						<div class="fs16 col_r price">
+							<?php $typepid = empty($v['typepid'])?0:$v['typepid'];?>
+							<?php if($typepid == 4) { ?>
+								<?php echo getTotalUnits2($typepid, $v['seed_number']);?>
+							<?php } else { ?>
+								<?php echo getTotalUnits2($typepid, $v['salesprice']);?>
+							<?php } ?>
+
+						</div>
 					</div>
 				</div>
 				<?php endforeach; ?>
@@ -116,7 +124,7 @@
 						<div class="table-cell item-tit">
 						<?php 
 						if($typepid == 4){
-						    $totalAmount = $orderCart['totalAmount']+$orderCart['yunfei']-$orderCart['minYongjin'];
+						    $totalAmount = $orderCart['totalAmount']*0.9; //9折优惠
 						}elseif($typepid == 20){
 						    $totalAmount = $orderCart['totalAmount']+$orderCart['yunfei']-$orderCart['minJifen'];
 						}else{

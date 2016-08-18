@@ -12,7 +12,7 @@
                 <div class="table-cell v-t choose">
                     <input type="hidden" name="seed_widthdraw" value="<?php echo $seed_widthdraw; ?>" id="seed_widthdraw" />
                     <input type="hidden" name="seed_money" value="<?php echo $seed_money; ?>" id="seed_money" />
-                    <select class="select">
+                    <select class="select" name="withdraw_money" id="withdraw_money">
                         <?php foreach($withdraw as $v) { ?>
                                 <option value="<?php echo $v;?>" ><?php echo $v;?>元</option>
                         <?php } ?>
@@ -97,19 +97,25 @@
     $("#tixian").on('click',function(){
         var seed_widthdraw = $("#seed_widthdraw").val();
         var seed_money = $("#seed_money").val();
-        $.post("index.php?c=member&a=ktx", {seed_widthdraw : seed_widthdraw, seed_money :　seed_money, type: 'tixian'　}, function(ret){
-           alert(ret);
-            window.location.reload();
-        });
+        var withdraw_money = $("#withdraw_money").val();
+        if(confirm('确定要提现么?')){
+            $.post("index.php?c=member&a=ktx", {seed_widthdraw : seed_widthdraw, seed_money :　seed_money, withdraw_money : withdraw_money, type: 'tixian'　}, function(ret){
+                alert(ret);
+                window.location.reload();
+            });
+        }
     });
 
     $("#duihuang").on('click',function(){
         var seed_type = $("#seed_type").val();
         var number = $("#number").val();
-        $.post("index.php?c=member&a=ktx", {number : number, seed_type :　seed_type, type: 'duihuang'　}, function(ret){
-            alert(ret);
-            window.location.reload();
-        });
+        if(confirm('确定要兑换么？')){
+            $.post("index.php?c=member&a=ktx", {number : number, seed_type :　seed_type, type: 'duihuang'　}, function(ret){
+                alert(ret);
+                window.location.reload();
+            });
+        }
+
     });
 
     $(function () {

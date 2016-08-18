@@ -72,4 +72,5 @@ $cfg_silver_golden = '10';
 $cfg_copper_description = '500颗普通种子 可换1个铜种子';
 $cfg_silver_description = '10个铜种子 可换1个银种子';
 $cfg_golden_description = '10个银种子 可换1个金种子';
+$cfg_commission_child = '10';
 ?>

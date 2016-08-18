@@ -34,6 +34,7 @@ else{
 
 /************************正常购买***************************/
 }
+
 $areas = listarea(-1);
 $orderCart['order_type'] = isset($orderCart['order_type']) ? $orderCart['order_type'] : '-1';
 //订单提交错误信息
@@ -97,7 +98,12 @@ if (!empty($checkoutSub)) {
         if($userInfo['yongjin'] >= $amount){
             $amount = 0;
         } else {
-            $amount = $orderCart['totalAmount'] + $orderCart['yunfei']-$useintegral;
+            if($typepid == 4 ){
+                $amount = $orderCart['totalAmount']*0.9; //兑换9折优惠
+            } else {
+                $amount = $orderCart['totalAmount'] + $orderCart['yunfei']-$useintegral;
+            }
+
         }
 
 
@@ -143,12 +149,18 @@ if (!empty($checkoutSub)) {
             delCookie('orderCart');
             setcookie('cart', AuthCode(serialize($cart), 'ENCODE'));
             //跳转支付
-            if($typepid == 4 && $userInfo['yongjin'] >= $useintegral) {// 种子兑换
+            if($typepid == 4 && $userInfo['yongjin'] >= ($useintegral*0.9) ) {// 种子兑换
                 $tmp = 'confirm,payment';
                 $sql = "UPDATE `#@__goodsorder` SET checkinfo='$tmp' WHERE `ordernum`='{$ordernum}'";
                 $dosql->ExecNoneQuery($sql);
                 $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin - {$useintegral} where id={$userInfo['id']}");
+                //返利给自己 15%
+                $return_yongjin = $useintegral*0.9*0.15;
+                $dosql->ExecNoneQuery("UPDATE `#@__member` SET yongjin=yongjin + {$return_yongjin}, totalYongjin = totalYongjin + '$return_yongjin' where id={$userInfo['id']}");
                 operate_commision($userInfo['id'], $useintegral, '-', '种子兑换', $ordernum, $userInfo['id'],'您在种子商城已兑换成功。',2);
+
+                operate_commision($userInfo['id'], $return_yongjin, '+', '种子兑换返利', $ordernum, $userInfo['id'],'您在种子商城已兑换商品所得返利成功。',2);
+
                 redirect('index.php?c=member&a=order&flag=postgoods');
             }elseif ($typepid == 20 && $userInfo['jifen'] >= $useintegral){// 积分兑换
                 $tmp = 'confirm,payment';
@@ -165,7 +177,15 @@ if (!empty($checkoutSub)) {
                 operate_commision($userInfo['id'], $useintegral, '-', '种子抵现', $ordernum, $userInfo['id'],'您在种子商城认购已支付成功。',2);
                 redirect('index.php?c=member&a=order&flag=postgoods');
             }elseif($paymode==1 && $amount > 0){// 正常购买 微信支付
-                redirect('topay/wechatpay/js_api_call.php?ordernum='.$ordernum);
+                if($typepid == 4){
+
+                    ShowMsg("您的种子数量不足，无法兑换");
+                    exit;
+
+                }else {
+                    redirect('topay/wechatpay/js_api_call.php?ordernum='.$ordernum);
+                }
+
             }else{
                 echo '参数错误!';
             }

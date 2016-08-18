@@ -20,8 +20,8 @@
                   <div class="br20 numpic"><img src="<?php echo $activity_info['picurl'];  ; ?> "></div>
             </div>
             <div class="table-cell v-t item_con">
-            	<p class="fs28 col_0 t1"><?php if($activity_info['order_type'] == 2) {  ?> 活动认养总数量: <?php } elseif($activity_info['order_type'] == 3) { ?>  活动认购总数量: <?php } ?> <i class="fs36 col_ff"> <?php echo $activity_info['housenum'];?> </i>颗</p>
-                <p class="col_80 t2"><span><?php if($activity_info['order_type'] == 2) {  ?> 已认养: <?php } elseif($activity_info['order_type'] == 3) { ?>  已认购: <?php } ?><i class="fs30 col_ff"> <?php echo $activity_info['salenum'];?> </i>颗</span><span>剩余：<i class="fs30 col_ff"> <?php echo  $activity_info['housenum'] - $activity_info['salenum'] >= 0 ?  $activity_info['housenum'] - $activity_info['salenum'] : '0'  ;?> </i>颗</span></p>
+            	<p class="fs28 col_0 t1"><?php if($activity_info['order_type'] == 2) {  ?> 活动认养总数量: <?php } elseif($activity_info['order_type'] == 3) { ?>  活动认购总数量: <?php } ?> <i class="fs36 col_ff"> <?php echo $activity_info['housenum'] +  $activity_info['salenum'];?> </i>颗</p>
+                <p class="col_80 t2"><span><?php if($activity_info['order_type'] == 2) {  ?> 已认养: <?php } elseif($activity_info['order_type'] == 3) { ?>  已认购: <?php } ?><i class="fs30 col_ff"> <?php echo $activity_info['salenum'];?> </i>颗</span><span>剩余：<i class="fs30 col_ff"> <?php echo  $activity_info['housenum'] > 0 ?  $activity_info['housenum'] : '0'  ;?> </i>颗</span></p>
             </div>
         </div>
 
@@ -88,7 +88,7 @@
         <div class="plb32 order_confim_btn">
         	 <div class="submit"><a href="index.php?c=activity&a=message&id=<?php echo $id;?>"> <button type="button" class="br5 b_g col_a2 b_d combtn ">留    言</button> </a> </div>
             <a href="index.php?c=children"> <div class="submit"><button type="button" class="br5 b_91 col_f combtn ">帮助儿童介绍详情</button></div></a>
-             <div class="submit"><button type="button" class="br5 b_a2 col_f combtn ">我要捐赠</button></div>
+            <a href="index.php?c=activity&a=donate&id=<?php echo $id; ?>"> <div class="submit"><button type="button" class="br5 b_a2 col_f combtn ">我要捐赠</button></div> </a>
         </div>
         <section class="article aixin">
             <div class="br20 b_d inner_active_intro">

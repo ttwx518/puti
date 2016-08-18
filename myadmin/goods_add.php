@@ -128,6 +128,13 @@ IsModelPriv('goods');
                         天使销售价 <input name="salesprice_tianshi" type="text" id="salesprice_tianshi" class="inputs" style="width:50px" />
                     </td>
                 </tr>
+                <tr>
+                    <td height="40" align="right">兑换种子数：</td>
+                    <td>
+                        <input name="seed_number" type="text" class="input" id="weight" />
+                    </td>
+                </tr>
+
                 <tr style="display: none">
                     <td height="40" align="right">商品佣金：</td>
                     <td>

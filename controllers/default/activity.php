@@ -163,6 +163,7 @@ elseif ($a == 'donate'){
     if(!empty($savedonate) && $jine>0){
         $id=empty($id)?0:intval($id);
         $jine=empty($jine)?0:intval($jine);
+
         $createtime = time();
         $info=$dosql->GetOne("SELECT id,title,auid from `#@__infolist` WHERE id={$id}");
         $auser=$dosql->GetOne("SELECT openid from `#@__member` WHERE id={$info['auid']}");
@@ -185,6 +186,7 @@ elseif ($a == 'donate'){
     }
     
     $clsid = empty($clsid)?5:intval($clsid);
+    $id = isset($id) ? $id : '';
     $infolist = array();
     $dosql->Execute("SELECT * FROM `#@__infolist` WHERE delstate='' AND checkinfo='true' AND starttime<{$time} and endtime>{$time} and classid= {$clsid} order by id desc");
     while ($row=$dosql->GetArray()){

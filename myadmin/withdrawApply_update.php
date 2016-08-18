@@ -21,12 +21,12 @@ IsModelPriv('withdrawApply');
         </div>
         <form name="form" id="form" method="post" action="withdrawApply_save.php">
             <table width="100%" border="0" cellspacing="0" cellpadding="0" class="formTable">
-                <tr>
-                    <td height="40" align="right">收款账号：</td>
-                    <td width="75%">
-                        <strong><?php echo $row['alipayAccount']; ?></strong>
-                    </td>
-                </tr>
+<!--                <tr>-->
+<!--                    <td height="40" align="right">收款账号：</td>-->
+<!--                    <td width="75%">-->
+<!--                        <strong>--><?php //echo $row['alipayAccount']; ?><!--</strong>-->
+<!--                    </td>-->
+<!--                </tr>-->
                 <tr>
                     <td width="25%" height="40" align="right">真实姓名：</td>
                     <td>

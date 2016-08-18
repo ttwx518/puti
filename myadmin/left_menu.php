@@ -53,6 +53,7 @@
                             <a href="infolist.php?cid=2" target="main">公司信息管理</a>
                             <a href="children.php" target="main">残障儿童管理</a>
                             <a href="infolist.php?cid=5" target="main">活动信息管理</a>
+                            <a href="infolist.php?cid=8" target="main">帮困认购活动管理</a>
                             <a href="infolist.php?cid=6" target="main">庙宇介绍管理</a>
                             <div class="hr_1"> </div>
 <!--                             <a href="infoimg.php" target="main">图片信息管理</a> -->
@@ -80,6 +81,7 @@
                             <a href="member.php" target="main">用户管理</a>
                             <div class="hr_1"> </div>
 <!--                             <a href="usergroup.php" target="main" class="usertype">用户组管理</a> -->
+                            <a href="seed_water.php" target="main">种子明细</a>
                             <a href="withdrawApply.php" target="main">提现申请管理</a>
                             <a href="withdrawRecord.php" target="main">提现记录管理</a>
 <!--                             <a href="commissionRanking.php" target="main">佣金排行统计</a> -->
