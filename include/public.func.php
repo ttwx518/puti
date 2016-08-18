@@ -22,7 +22,7 @@ function isLogin(){
     
     //获取登录用户信息
     $openid = getCookie('openid');
-    $openid = 'oeOj8v5w1sDAZenkLbQawegNsFe4';
+   // $openid = 'oeOj8v5w1sDAZenkLbQawegNsFe4';
     $userInfo = array();
     if($openid){
         $userInfo = $dosql->GetOne("SELECT m.*,g.groupname FROM `#@__member` m LEFT JOIN #@__usergroup g ON m.group_id=g.id WHERE openid='{$openid}'");
